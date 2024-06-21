@@ -74,14 +74,18 @@ void Key_Callback(
                pausePhysics = !pausePhysics;
             }
             break;
-        //* Swap Camera
-        case GLFW_KEY_LEFT_SHIFT:
+        //* Swap Camera to Orthographic
+        case GLFW_KEY_1:
             if (action == GLFW_PRESS) {
-                if(activeCamera == cameras[0]) {
-                    activeCamera = cameras[1];
-                } else {
-                    activeCamera = cameras[0];
-                }
+                activeCamera = cameras[1];
+                system("cls");
+               cout << "Current Camera Switched to: " + activeCamera->getName() << endl;
+            }
+            break;
+        //* Swap Camera to Perspective
+        case GLFW_KEY_2:
+            if (action == GLFW_PRESS) {
+                activeCamera = cameras[0];
                 system("cls");
                cout << "Current Camera Switched to: " + activeCamera->getName() << endl;
             }
@@ -107,6 +111,13 @@ int main(void) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glfwSetKeyCallback(window, Key_Callback);
     //* - - - - - END OF WINDOW CREATION - - - - -
+
+    //* - - - - - USER INPUT - - - - -
+    int sparkCount = 0;
+    cout << "How many sparks to spawn?" << endl;
+    cin >> sparkCount;
+    cout << "Spawning " << sparkCount << " sparks!" << endl;
+    //* - - - - - END OF USER INPUT - - - - -
 
     //* - - - - - PLAYER INITIALIZATION - - - - - 
     player = new Player();
@@ -330,7 +341,6 @@ int main(void) {
     //* - - - - - MODEL LOADING - - - - -
     renderingList = {};
     for (My3DModel* model : renderingList) {
-        cout << "Loading Model: " + model->getName() << endl;
         model->loadModel();
     }
     //* - - - - - END OF MODEL LOADING - - - - -
@@ -348,7 +358,7 @@ int main(void) {
     particleModel->loadModel();
 
     physicsWorld.addParticle(new MyParticleSystem(
-        particleModel, MyVector3(0.0f, 0.0f, 0.0f), 10.0f, 100, &physicsWorld));
+        particleModel, MyVector3(0.0f, 0.0f, 0.0f), 10.0f, sparkCount, &physicsWorld));
 
     if (ORIGIN_MARKER) {
         physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)));

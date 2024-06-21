@@ -19,7 +19,7 @@ const int WINDOW_WIDTH                          = 800;
 const int WINDOW_HEIGHT                         = 800;
 const bool DRAW_SKYBOX                          = false;
 
-const std::string WINDOW_NAME                   = "PC01 Conrad Amadeus Carmelo C. Ubay";
+const std::string WINDOW_NAME                   = "Phase 1 OpenGL Renderer by Ubay";
 
 const std::string LIGHTING_FRAGMENT_SHADER_PATH = "Shaders/main.frag";
 const std::string LIGHTING_VERTEX_SHADER_PATH   = "Shaders/main.vert";
