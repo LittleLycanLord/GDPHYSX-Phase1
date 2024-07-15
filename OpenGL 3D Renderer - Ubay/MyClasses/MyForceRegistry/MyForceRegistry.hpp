@@ -32,7 +32,7 @@ public:
     void add(MyParticle* particle, MyForceGenerator* generator);
     void remove(MyParticle* particle, MyForceGenerator* generator);
     void clear();
-    void updateForces(float time);
+    void updateForces(double time);
     list<MyForceGenerator*> getAppliedForces();
     list<MyParticle*> getAffectedParticles();
 

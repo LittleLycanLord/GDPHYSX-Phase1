@@ -27,7 +27,7 @@ void MyForceRegistry::remove(MyParticle* particle, MyForceGenerator* generator) 
     });
 }
 void MyForceRegistry::clear() { this->registry.clear(); }
-void MyForceRegistry::updateForces(float time) {
+void MyForceRegistry::updateForces(double time) {
     for (MyParticleForceRegistry force : this->registry) {
         force.generator->updateForce(force.particle, time);
     }

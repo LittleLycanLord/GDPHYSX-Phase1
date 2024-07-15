@@ -12,32 +12,32 @@ MyRenderParticle::MyRenderParticle(My3DModel* model, MyVector3 tint)
                           model,
                           glm::vec3(0.0f, 0.0f, 0.0f),
                           glm::mat4(1.0f),
-                          glm::vec3(PARTICLE_SCALE),
+                          glm::vec3(DEFAULT_PARTICLE_SIZE),
                           glm::vec3(0.0f))),
       tint(tint) {
     this->model->setTint((glm::vec3)tint);
 }
-MyRenderParticle::MyRenderParticle(My3DModel* model, double mass, MyVector3 tint)
-    : MyParticle(mass),
+MyRenderParticle::MyRenderParticle(My3DModel* model, vector<double> attributes, MyVector3 tint)
+    : MyParticle(attributes),
       model(new My3DModel("DEFAULT PARTICLE",
                           model,
                           glm::vec3(0.0f, 0.0f, 0.0f),
                           glm::mat4(1.0f),
-                          glm::vec3(PARTICLE_SCALE),
+                          glm::vec3(DEFAULT_PARTICLE_SIZE),
                           glm::vec3(0.0f))),
       tint(tint) {
     this->model->setTint((glm::vec3)tint);
 }
 MyRenderParticle::MyRenderParticle(My3DModel* model,
-                                   double mass,
+                                   vector<double> attributes,
                                    MyVector3 position,
                                    MyVector3 tint)
-    : MyParticle(mass, position),
+    : MyParticle(attributes, position),
       model(new My3DModel("DEFAULT PARTICLE",
                           model,
                           glm::vec3(position),
                           glm::mat4(1.0f),
-                          glm::vec3(PARTICLE_SCALE),
+                          glm::vec3(DEFAULT_PARTICLE_SIZE),
                           glm::vec3(0.0f))),
       tint(tint) {
     this->model->setTint((glm::vec3)tint);
@@ -50,6 +50,7 @@ void MyRenderParticle::updateModel() {
     if (this->isDestroyed) {
         this->model->destroy();
     } else {
+        this->model->setScale(glm::vec3(this->radius));
         this->model->setPosition(glm::vec3(this->position));
     }
 }

@@ -20,8 +20,11 @@ protected:
 public:
     // Default Model with Custom Color
     MyRenderParticle(My3DModel* model, MyVector3 tint);
-    MyRenderParticle(My3DModel* model, double mass, MyVector3 tint);
-    MyRenderParticle(My3DModel* model, double mass, MyVector3 position, MyVector3 tint);
+    MyRenderParticle(My3DModel* model, vector<double> attributes, MyVector3 tint);
+    MyRenderParticle(My3DModel* model,
+                     vector<double> attributes,
+                     MyVector3 position,
+                     MyVector3 tint);
 
     //* ╔═════════╗
     //* ║ Methods ║

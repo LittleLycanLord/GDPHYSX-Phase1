@@ -12,7 +12,7 @@ MyDragGenerator::MyDragGenerator(double dragCoefficient1, double dragCoefficient
 //* ╔═════════╗
 //* ║ Methods ║
 //* ╚═════════╝
-void MyDragGenerator::updateForce(MyParticle* targetParticle, float time) {
+void MyDragGenerator::updateForce(MyParticle* targetParticle, double time) {
     MyVector3 force           = MyVector3();
     MyVector3 currentVelocity = targetParticle->getVelocity();
     double magnitude          = currentVelocity.getMagnitude();

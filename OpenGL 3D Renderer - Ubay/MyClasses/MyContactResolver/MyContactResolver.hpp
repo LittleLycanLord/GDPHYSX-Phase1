@@ -1,30 +1,33 @@
 #pragma once
-#include "../MyParticle/MyParticle.hpp"
+#include "../MyParticleContact/MyParticleContact.hpp"
+#include "../MyVectors/MyVector3.hpp"
+#include "algorithm"
 #include "stdafx.h"
 
-namespace MyPhysics {
-
+using namespace rendering;
 using namespace std;
 
-class MyForceGenerator {
+namespace MyPhysics {
+class MyContactResolver {
     //* ╔════════════╗
     //* ║ Attributes ║
     //* ╚════════════╝
-protected:
+private:
+    unsigned int maxIterations;
+    unsigned int currentIterations;
 
     //* ╔═══════════════════════════════╗
     //* ║ Constructors & Deconstructors ║
     //* ╚═══════════════════════════════╝
 public:
-    MyForceGenerator();
+    MyContactResolver(unsigned int maxIterations);
 
     //* ╔═════════╗
     //* ║ Methods ║
     //* ╚═════════╝
 public:
-    virtual void updateForce(MyParticle* targetParticle, double time);
+    void resolveContacts(vector<MyParticleContact*> contacts, double time);
 
-private:
     //* ╔═══════════════════╗
     //* ║ Getters & Setters ║
     //* ╚═══════════════════╝

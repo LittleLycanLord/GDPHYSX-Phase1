@@ -1,28 +1,35 @@
 #pragma once
 #include "../MyParticle/MyParticle.hpp"
+#include "../MyParticleContact/MyParticleContact.hpp"
+#include "../MyVectors/MyVector3.hpp"
 #include "stdafx.h"
 
 namespace MyPhysics {
 
 using namespace std;
 
-class MyForceGenerator {
+class MyParticleLink {
     //* ╔════════════╗
     //* ║ Attributes ║
     //* ╚════════════╝
 protected:
+    MyParticle* particleA;
+    MyParticle* particleB;
 
     //* ╔═══════════════════════════════╗
     //* ║ Constructors & Deconstructors ║
     //* ╚═══════════════════════════════╝
 public:
-    MyForceGenerator();
+    MyParticleLink(MyParticle* particleA, MyParticle* particleB);
 
     //* ╔═════════╗
     //* ║ Methods ║
     //* ╚═════════╝
 public:
-    virtual void updateForce(MyParticle* targetParticle, double time);
+    virtual MyParticleContact* getContact();
+
+protected:
+    double getCurrentLength();
 
 private:
     //* ╔═══════════════════╗

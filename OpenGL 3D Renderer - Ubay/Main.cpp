@@ -1,28 +1,34 @@
 // clang-format off
 #include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include "GLFW/glfw3.h"         
 
+#include "MyClasses/My3DModel/My3DModel.hpp"
+#include "MyClasses/MySprings/MyAnchoredSpring/MyAnchoredSpring.hpp"
+#include "MyClasses/MySprings/MyParticleSpring/MyParticleSpring.hpp"
 #include "MyClasses/MyCameras/MyCamera.hpp"
 #include "MyClasses/MyCameras/MyOrthographicCamera/MyOrthographicCamera.hpp"
 #include "MyClasses/MyCameras/MyPerspectiveCamera/MyPerspectiveCamera.hpp"
-#include "MyClasses/MyLights/MyLight.hpp"
-#include "MyClasses/MyLights/MyDirectionalLight/MyDirectionalLight.hpp"
-#include "MyClasses/MyLights/MySpotLight/MySpotLight.hpp"
-#include "MyClasses/MyLights/MyPointLight/MyPointLight.hpp"
-#include "MyClasses/MyTexture/MyTexture.hpp"
-#include "MyClasses/MyParticle/MyParticle.hpp"
-#include "MyClasses/MyParticle/MyRenderParticle/MyRenderParticle.hpp"
-#include "MyClasses/MyParticle/MyParticleSystem/MyParticleSystem.hpp"
+#include "MyClasses/MyContactResolver/MyContactResolver.hpp"
 #include "MyClasses/MyForceGenerator/MyDragGenerator/MyDragGenerator.hpp"
 #include "MyClasses/MyForceGenerator/MyGravityGenerator/MyGravityGenerator.hpp"
 #include "MyClasses/MyForceRegistry/MyForceRegistry.hpp"
-#include "MyClasses/MyPhysicsWorld/MyPhysicsWorld.hpp"
+#include "MyClasses/MyLights/MyDirectionalLight/MyDirectionalLight.hpp"
+#include "MyClasses/MyLights/MyLight.hpp"
+#include "MyClasses/MyLights/MyPointLight/MyPointLight.hpp"
+#include "MyClasses/MyLights/MySpotLight/MySpotLight.hpp"
 #include "MyClasses/MyNormal/MyNormal.hpp"
-#include "MyClasses/My3DModel/My3DModel.hpp"
-#include "MyClasses/Player/Player.hpp"
+#include "MyClasses/MyParticle/MyParticle.hpp"
+#include "MyClasses/MyParticle/MyParticleSystem/MyParticleSystem.hpp"
+#include "MyClasses/MyParticle/MyRenderParticle/MyRenderParticle.hpp"
+#include "MyClasses/MyParticleContact/MyParticleContact.hpp"
+#include "MyClasses/MyParticleLink/MyParticleLink.hpp"
+#include "MyClasses/MyParticleLink/MyRod/MyRod.hpp"
+#include "MyClasses/MyPhysicsWorld/MyPhysicsWorld.hpp"
 #include "MyClasses/MyShader/MyShader.hpp"
-#include "stdafx.h"
-// clang-format on                       
+#include "MyClasses/MyTexture/MyTexture.hpp"
+#include "MyClasses/Player/Player.hpp"
+#include "stdafx.h"      
+// clang-format on    
 
 using namespace std;
 using namespace chrono;
@@ -113,10 +119,11 @@ int main(void) {
     //* - - - - - END OF WINDOW CREATION - - - - -
 
     //* - - - - - USER INPUT - - - - -
-    int sparkCount = 0;
-    cout << "How many sparks to spawn?" << endl;
-    cin >> sparkCount;
-    cout << "Spawning " << sparkCount << " sparks!" << endl;
+    //* Fountain Test
+    // int sparkCount = 0;
+    // cout << "How many sparks to spawn?" << endl;
+    // cin >> sparkCount;
+    // cout << "Spawning " << sparkCount << " sparks!" << endl;
     //* - - - - - END OF USER INPUT - - - - -
 
     //* - - - - - PLAYER INITIALIZATION - - - - - 
@@ -259,15 +266,28 @@ int main(void) {
                 0.001f,
                 1000.0f));
         } else {
-            cameras.push_back(new MyOrthographicCamera("Orthographic Camera",
-                                                       glm::vec3(0.0f, 0.0f, WINDOW_WIDTH / 2),
-                                                       glm::vec3(0.0f, 0.0f, 0.0f),
-                                                       -WINDOW_WIDTH / 2,
-                                                       WINDOW_WIDTH / 2,
-                                                       -WINDOW_WIDTH / 2,
-                                                       WINDOW_WIDTH / 2,
-                                                       0.001f,
-                                                       1000.0f));
+            if (ZOOM_IN_CENTER) {
+                cameras.push_back(
+                    new MyOrthographicCamera("Orthographic Camera",
+                                             glm::vec3(0.0f, 0.0f, ZOOM_IN_CENTER_SIZE / 2),
+                                             glm::vec3(0.0f, 0.0f, 0.0f),
+                                             -ZOOM_IN_CENTER_SIZE / 2,
+                                             ZOOM_IN_CENTER_SIZE / 2,
+                                             -ZOOM_IN_CENTER_SIZE / 2,
+                                             ZOOM_IN_CENTER_SIZE / 2,
+                                             0.001f,
+                                             1000.0f));
+            } else {
+                cameras.push_back(new MyOrthographicCamera("Orthographic Camera",
+                                                           glm::vec3(0.0f, 0.0f, WINDOW_WIDTH / 2),
+                                                           glm::vec3(0.0f, 0.0f, 0.0f),
+                                                           -WINDOW_WIDTH / 2,
+                                                           WINDOW_WIDTH / 2,
+                                                           -WINDOW_WIDTH / 2,
+                                                           WINDOW_WIDTH / 2,
+                                                           0.001f,
+                                                           1000.0f));
+            }
         }
     }
 
@@ -345,7 +365,7 @@ int main(void) {
     }
     //* - - - - - END OF MODEL LOADING - - - - -
 
-    //* - - - - - PARTICLES - - - - -
+    //* - - - - - PARTICLE SETUP - - - - -
     My3DModel* particleModel = new My3DModel("DEFAULT PARTICLE",
                                              DEFAULT_PARTICLE_MODEL_PATH,
                                              DEFAULT_PARTICLE_TEXTURE_PATH,
@@ -353,22 +373,104 @@ int main(void) {
                                              glm::vec3(1.0f),
                                              glm::vec3(0.0f, 0.0f, 0.0f),
                                              glm::mat4(1.0f),
-                                             glm::vec3(PARTICLE_SCALE),
+                                             glm::vec3(DEFAULT_PARTICLE_SIZE),
                                              glm::vec3(0.0f));
     particleModel->loadModel();
 
-    physicsWorld.addParticle(new MyParticleSystem(
-        particleModel, MyVector3(0.0f, 0.0f, 0.0f), 10.0f, sparkCount, &physicsWorld));
-
+    int originParticles = 0;
     if (ORIGIN_MARKER) {
-        physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)));
-        physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(0.0f, 1.0f, 0.0f)));
-        physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f)));
+        physicsWorld.addParticles(
+            {new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
+             new MyRenderParticle(particleModel, MyVector3(0.0f, 1.0f, 0.0f)),
+             new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f)),
+             new MyRenderParticle(particleModel, MyVector3(1.0f, 1.0f, 1.0f))});
         physicsWorld.getParticleListAsVector()[0]->setPosition(MyVector3(100.0f, 0.0f, 0.0f));
         physicsWorld.getParticleListAsVector()[1]->setPosition(MyVector3(0.0f, 100.0f, 0.0f));
         physicsWorld.getParticleListAsVector()[2]->setPosition(MyVector3(0.0f, 0.0f, 100.0f));
-        physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(1.0f, 1.0f, 1.0f)));
+        originParticles = 4;
     }
+    //* - - - - - END OF PARTICLE SETUP - - - - -
+
+    //* - - - - - PARTICLES - - - - -
+    physicsWorld.addParticles({
+       //? Particle System Test
+       // new MyParticleSystem(
+       // particleModel, MyVector3(0.0f, 0.0f, 0.0f), 10.0f, sparkCount, &physicsWorld)
+       //? Contact Resolver Test
+    //    new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
+    //    new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f))
+       //? Rod, Particle Spring, and Anchored Spring Test
+        // new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
+        // new MyRenderParticle(particleModel, MyVector3(0.5f, 0.0f, 0.0f)),
+        // new MyRenderParticle(particleModel, MyVector3(0.0f, 1.0f, 0.0f)),
+        // new MyRenderParticle(particleModel, MyVector3(0.0f, 0.5f, 0.0f)),
+        // new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f))
+    });
+
+    //? Contact Resolver Test: With Collision Detection
+    // physicsWorld.getParticleListAsVector()[0 + originParticles]->setPosition(
+    //     MyVector3(-20.0f, 0.0f, 0.0f));
+    // physicsWorld.getParticleListAsVector()[1 + originParticles]->setPosition(
+    //     MyVector3(20.0f, 0.0f, 0.0f));
+    // physicsWorld.getParticleListAsVector()[0 + originParticles]->setRadius(10.0f);
+    // physicsWorld.getParticleListAsVector()[1 + originParticles]->setRadius(10.0f);
+    // physicsWorld.getParticleListAsVector()[0 + originParticles]->addForce(
+    //     MyVector3(1000.0f, 0.0f, 0.0f));
+    // physicsWorld.getParticleListAsVector()[1 + originParticles]->addForce(
+    //     MyVector3(-1000.0f, 0.0f, 0.0f));
+
+    //? Contact Resolver Test: No Collision Detection (remove generateContacts from
+    // physicsWorld)
+    // physicsWorld.addParticleContact(
+    //     physicsWorld.getParticleListAsVector()[0 + originParticles],
+    //     physicsWorld.getParticleListAsVector()[1 + originParticles],
+    //     1,
+    //     0.5,
+    //     MyVector3(physicsWorld.getParticleListAsVector()[0 + originParticles]->getPosition()
+    //     -
+    //               physicsWorld.getParticleListAsVector()[1 + originParticles]->getPosition())
+    //         .getNormalized());
+
+    //? Rod
+    physicsWorld.getParticleListAsVector()[0 + originParticles]->setPosition(
+        MyVector3(-75.0f, 25.0f, 0.0f));
+    physicsWorld.getParticleListAsVector()[1 + originParticles]->setPosition(
+        MyVector3(-25.0f, -25.0f, 0.0f));
+    MyVector3 rodLength =
+        physicsWorld.getParticleListAsVector()[0 + originParticles]->getPosition() -
+        physicsWorld.getParticleListAsVector()[1 + originParticles]->getPosition();
+    physicsWorld.addRod(physicsWorld.getParticleListAsVector()[0 + originParticles],
+                        physicsWorld.getParticleListAsVector()[1 + originParticles],
+                        rodLength.getMagnitude());
+    // physicsWorld.getParticleListAsVector()[0 + originParticles]->setUsesGravity(true);
+    // physicsWorld.getParticleListAsVector()[1 + originParticles]->setUsesGravity(true);
+    physicsWorld.getParticleListAsVector()[0 + originParticles]->addForce(
+        MyVector3(0.0f, 1000.0f, 0.0f));
+    // cout << "70.710678 | " << rodLength.getMagnitude() << endl;
+
+    //? Particle Spring
+    physicsWorld.getParticleListAsVector()[2 + originParticles]->setPosition(
+        MyVector3(-25.0f, 25.0f, 0.0f));
+    physicsWorld.getParticleListAsVector()[2 + originParticles]->setUsesGravity(true);
+    physicsWorld.getParticleListAsVector()[3 + originParticles]->setPosition(
+        MyVector3(25.0f, -25.0f, 0.0f));
+    MyVector3 particleSpringLength =
+        physicsWorld.getParticleListAsVector()[2 + originParticles]->getPosition() -
+        physicsWorld.getParticleListAsVector()[3 + originParticles]->getPosition();
+    physicsWorld.addSpring(physicsWorld.getParticleListAsVector()[2 + originParticles],
+                           physicsWorld.getParticleListAsVector()[3 + originParticles],
+                           5.0f,
+                           particleSpringLength.getMagnitude());
+
+    //? Anchored Spring
+    physicsWorld.getParticleListAsVector()[4 + originParticles]->setPosition(
+        MyVector3(25.0f, 25.0f, 0.0f));
+    physicsWorld.getParticleListAsVector()[4 + originParticles]->setUsesGravity(true);
+    physicsWorld.addSpring(physicsWorld.getParticleListAsVector()[4 + originParticles],
+                           MyVector3(75.0f, -25.0f, 0.0f),
+                           5.0f,
+                           1.0f);
+
     //* - - - - - END OF PARTICLES - - - - -
 
     //* - - - - - PRE-RUNTIME - - - - -
@@ -403,14 +505,14 @@ int main(void) {
             if (currentNanosecond >= TIMESTEP) {
                 auto millisecond = duration_cast<milliseconds>(currentNanosecond);
                 if (DEBUG_MODE_PHYSICS_TIME)
-                    cout << "Millisecond: " << (float)millisecond.count() << endl;
+                    cout << "Millisecond: " << (double)millisecond.count() << endl;
                 if (DEBUG_MODE_PHYSICS_TIME) cout << "Physics Update" << endl;
 
                 //? Place physics related updates BELOW this line
                 //* - - - - - DEBUGGING - - - - -
                 //* - - - - - END OF DEBUGGING - - - - -
 
-                physicsWorld.update((float)millisecond.count() / 1000);
+                physicsWorld.update((double)millisecond.count() / 1000);
                 //? Place physics related updates ABOVE this line
 
                 currentNanosecond -= currentNanosecond;

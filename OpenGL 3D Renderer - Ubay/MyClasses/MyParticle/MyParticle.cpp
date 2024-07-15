@@ -5,10 +5,26 @@ using namespace MyPhysics;
 //* ╔═══════════════════════════════╗
 //* ║ Constructors & Deconstructors ║
 //* ╚═══════════════════════════════╝
-MyParticle::MyParticle() : mass(1.0f), position(0.0f) {}
-MyParticle::MyParticle(double mass) : mass(mass), position(0.0f) {}
-MyParticle::MyParticle(MyVector3 position) : mass(1.0f), position(position) {}
-MyParticle::MyParticle(double mass, MyVector3 position) : mass(mass), position(position) {}
+MyParticle::MyParticle()
+    : mass(1.0f),
+      radius(DEFAULT_PARTICLE_SIZE),
+      restitution(1.0f),
+      position(0.0f) {}
+MyParticle::MyParticle(vector<double> attributes)
+    : mass(attributes[0]),
+      radius(attributes[1]),
+      restitution(attributes[2]),
+      position(0.0f) {}
+MyParticle::MyParticle(MyVector3 position)
+    : mass(1.0f),
+      radius(DEFAULT_PARTICLE_SIZE),
+      restitution(1.0f),
+      position(position) {}
+MyParticle::MyParticle(vector<double> attributes, MyVector3 position)
+    : mass(attributes[0]),
+      radius(attributes[1]),
+      restitution(attributes[2]),
+      position(position) {}
 
 //* ╔═════════╗
 //* ║ Methods ║
@@ -28,7 +44,7 @@ void MyParticle::updatePosition(double time) {
 void MyParticle::updateVelocity(double time) {
     this->acceleration += this->accumulatedForce * (1 / this->mass);
     this->velocity = this->velocity + (this->acceleration * time);
-    this->velocity = this->velocity * pow(damping, time);
+    this->velocity = this->velocity * powf(damping, time);
 }
 void MyParticle::updateAverageVelocity(int physicsUpdateCount) {
     this->totalVelocity += this->velocity;
@@ -81,6 +97,10 @@ void MyParticle::destroy() {
 My3DModel* MyParticle::getModel3D() { return NULL; }
 double MyParticle::getMass() { return this->mass; }
 void MyParticle::setMass(double mass) { this->mass = mass; }
+double MyParticle::getRadius() { return this->radius; }
+void MyParticle::setRadius(double radius) { this->radius = radius; }
+double MyParticle::getRestitution() { return this->restitution; }
+void MyParticle::setRestitution(double restitution) { this->restitution = restitution; }
 double MyParticle::getDamping() { return this->damping; }
 void MyParticle::setDamping(double damping) { this->damping = damping; }
 double MyParticle::getLifetime() { return this->lifetime; }

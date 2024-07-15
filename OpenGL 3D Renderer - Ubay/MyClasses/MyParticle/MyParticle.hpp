@@ -14,6 +14,8 @@ class MyParticle {
     //* ╚════════════╝
 protected:
     double mass;         //? in kg
+    double radius;       //? in m
+    double restitution;  //? in sticky units
     MyVector3 position;  //? in m
 
     double damping   = DEFAULT_DAMPING;  //? [0 -> 1]; the lower the value, the higher the drag
@@ -33,9 +35,9 @@ protected:
     //* ╚═══════════════════════════════╝
 public:
     MyParticle();
-    MyParticle(double mass);
+    MyParticle(vector<double> attributes);
     MyParticle(MyVector3 position);
-    MyParticle(double mass, MyVector3 position);
+    MyParticle(vector<double> attributes, MyVector3 position);
 
     //* ╔═════════╗
     //* ║ Methods ║
@@ -62,6 +64,10 @@ public:
     virtual My3DModel* getModel3D();
     double getMass();
     void setMass(double mass);
+    double getRadius();
+    void setRadius(double radius);
+    double getRestitution();
+    void setRestitution (double restitution);
     double getDamping();
     void setDamping(double damping);
     double getLifetime();

@@ -54,6 +54,7 @@ public:
     MyVector3 operator/(const MyVector3 dividend);
     void operator/=(const MyVector3 dividend);
     double getMagnitude();
+    double getSquareMagnitude();
     MyVector3 getNormalized();
     //* ╔═══════════════════╗
     //* ║ Getters & Setters ║

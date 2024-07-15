@@ -86,6 +86,7 @@ void MyVector2::operator/=(const MyVector2 dividend) {
     }
 }
 double MyVector2::getMagnitude() { return sqrt(pow(this->x, 2) + pow(this->y, 2)); }
+double MyVector2::getSquareMagnitude() { return pow(this->x, 2) + pow(this->y, 2 ); }
 MyVector2 MyVector2::getNormalized() {
     return MyVector2(this->x / this->getMagnitude(), this->y / this->getMagnitude());
 }

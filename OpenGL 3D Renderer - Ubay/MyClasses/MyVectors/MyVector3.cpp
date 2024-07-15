@@ -15,11 +15,12 @@ MyVector3::MyVector3(glm::vec3 xyz) : x(xyz.x), y(xyz.y), z(xyz.z) {}
 //* ║ Methods ║
 //* ╚═════════╝
 void MyVector3::DisplayValuesIndividually(std::string message, int precision) {
-    cout << fixed << setprecision(precision) << message << " -> " << "X: " << this->x << ", Y: " << this->y
-         << ", Z: " << this->z << endl;
+    cout << fixed << setprecision(precision) << message << " -> " << "X: " << this->x
+         << ", Y: " << this->y << ", Z: " << this->z << endl;
 }
 void MyVector3::DisplayValues(int precision) {
-    cout << fixed << setprecision(precision) << "(" << this->x << ", " << this->y << ", " << this->z << ")";
+    cout << fixed << setprecision(precision) << "(" << this->x << ", " << this->y << ", " << this->z
+         << ")";
 }
 
 //? Vector Operations
@@ -99,6 +100,9 @@ void MyVector3::operator/=(const MyVector3 dividend) {
 }
 double MyVector3::getMagnitude() {
     return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
+}
+double MyVector3::getSquareMagnitude() {
+    return pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2);
 }
 MyVector3 MyVector3::getNormalized() {
     return MyVector3(this->x / this->getMagnitude(),

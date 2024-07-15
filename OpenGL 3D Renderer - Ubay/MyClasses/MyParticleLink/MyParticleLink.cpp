@@ -1,16 +1,21 @@
-#include "MyForceGenerator.hpp"
+#include "MyParticleLink.hpp"
 
 using namespace MyPhysics;
 
 //* ╔═══════════════════════════════╗
 //* ║ Constructors & Deconstructors ║
 //* ╚═══════════════════════════════╝
-MyForceGenerator::MyForceGenerator() {}
+MyParticleLink::MyParticleLink(MyParticle* particleA, MyParticle* particleB)
+    : particleA(particleA),
+      particleB(particleB) {}
+
 //* ╔═════════╗
 //* ║ Methods ║
 //* ╚═════════╝
-void MyForceGenerator::updateForce(MyParticle* targetParticle, double time) {
-    targetParticle->addForce(MyVector3());
+MyParticleContact* MyParticleLink::getContact() { return nullptr; }
+double MyParticleLink::getCurrentLength() {
+    return MyVector3(this->particleA->getPosition() - this->particleB->getPosition())
+        .getMagnitude();
 }
 
 //* ╔═══════════════════╗
