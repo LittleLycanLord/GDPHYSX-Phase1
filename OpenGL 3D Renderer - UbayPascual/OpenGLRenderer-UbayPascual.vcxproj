@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{207fca26-0ef3-4219-8824-e15f90447f24}</ProjectGuid>
+    <RootNamespace>ConsoleApplication2</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>OpenGLRenderer-UbayPascual</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="glad.c" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MyClasses\My3DModel\My3DModel.cpp" />
+    <ClCompile Include="MyClasses\My3DModel\tinyObjLoader.cpp" />
+    <ClCompile Include="MyClasses\MyCameras\MyCamera.cpp" />
+    <ClCompile Include="MyClasses\MyCameras\MyOrthographicCamera\MyOrthographicCamera.cpp" />
+    <ClCompile Include="MyClasses\MyCameras\MyPerspectiveCamera\MyPerspectiveCamera.cpp" />
+    <ClCompile Include="MyClasses\MyContactResolver\MyContactResolver.cpp" />
+    <ClCompile Include="MyClasses\MyForceGenerator\MyDragGenerator\MyDragGenerator.cpp" />
+    <ClCompile Include="MyClasses\MyForceGenerator\MyForceGenerator.cpp" />
+    <ClCompile Include="MyClasses\MyForceGenerator\MyGravityGenerator\MyGravityGenerator.cpp" />
+    <ClCompile Include="MyClasses\MyForceRegistry\MyForceRegistry.cpp" />
+    <ClCompile Include="MyClasses\MyLights\MyDirectionalLight\MyDirectionalLight.cpp" />
+    <ClCompile Include="MyClasses\MyLights\MyLight.cpp" />
+    <ClCompile Include="MyClasses\MyLights\MyPointLight\MyPointLight.cpp" />
+    <ClCompile Include="MyClasses\MyLights\MySpotLight\MySpotLight.cpp" />
+    <ClCompile Include="MyClasses\MyNormal\MyNormal.cpp" />
+    <ClCompile Include="MyClasses\MyNormal\stbi.cpp" />
+    <ClCompile Include="MyClasses\MyParticleContact\MyParticleContact.cpp" />
+    <ClCompile Include="MyClasses\MyParticleLink\MyParticleLink.cpp" />
+    <ClCompile Include="MyClasses\MyParticleLink\MyRod\MyRod.cpp" />
+    <ClCompile Include="MyClasses\MyParticle\MyParticle.cpp" />
+    <ClCompile Include="MyClasses\MyParticle\MyParticleSystem\MyParticleSystem.cpp" />
+    <ClCompile Include="MyClasses\MyParticle\MyRenderParticle\MyRenderParticle.cpp" />
+    <ClCompile Include="MyClasses\MyPhysicsWorld\MyPhysicsWorld.cpp" />
+    <ClCompile Include="MyClasses\MyShader\MyShader.cpp" />
+    <ClCompile Include="MyClasses\MySprings\MyAnchoredSpring\MyAnchoredSpring.cpp" />
+    <ClCompile Include="MyClasses\MySprings\MyParticleSpring\MyParticleSpring.cpp" />
+    <ClCompile Include="MyClasses\MyTexture\MyTexture.cpp" />
+    <ClCompile Include="MyClasses\MyVectors\MyVector2.cpp" />
+    <ClCompile Include="MyClasses\MyVectors\MyVector3.cpp" />
+    <ClCompile Include="MyClasses\Player\Player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Dependencies\include\Literals.hpp" />
+    <ClInclude Include="Dependencies\include\Settings.hpp" />
+    <ClInclude Include="Dependencies\include\stdafx.h" />
+    <ClInclude Include="MyClasses\My3DModel\My3DModel.hpp" />
+    <ClInclude Include="MyClasses\MyCameras\MyCamera.hpp" />
+    <ClInclude Include="MyClasses\MyCameras\MyOrthographicCamera\MyOrthographicCamera.hpp" />
+    <ClInclude Include="MyClasses\MyCameras\MyPerspectiveCamera\MyPerspectiveCamera.hpp" />
+    <ClInclude Include="MyClasses\MyContactResolver\MyContactResolver.hpp" />
+    <ClInclude Include="MyClasses\MyForceGenerator\MyDragGenerator\MyDragGenerator.hpp" />
+    <ClInclude Include="MyClasses\MyForceGenerator\MyForceGenerator.hpp" />
+    <ClInclude Include="MyClasses\MyForceGenerator\MyGravityGenerator\MyGravityGenerator.hpp" />
+    <ClInclude Include="MyClasses\MyForceRegistry\MyForceRegistry.hpp" />
+    <ClInclude Include="MyClasses\MyLights\MyDirectionalLight\MyDirectionalLight.hpp" />
+    <ClInclude Include="MyClasses\MyLights\MyLight.hpp" />
+    <ClInclude Include="MyClasses\MyLights\MyPointLight\MyPointLight.hpp" />
+    <ClInclude Include="MyClasses\MyLights\MySpotLight\MySpotLight.hpp" />
+    <ClInclude Include="MyClasses\MyNormal\MyNormal.hpp" />
+    <ClInclude Include="MyClasses\MyParticleContact\MyParticleContact.hpp" />
+    <ClInclude Include="MyClasses\MyParticleLink\MyParticleLink.hpp" />
+    <ClInclude Include="MyClasses\MyParticleLink\MyRod\MyRod.hpp" />
+    <ClInclude Include="MyClasses\MyParticle\MyParticle.hpp" />
+    <ClInclude Include="MyClasses\MyParticle\MyParticleSystem\MyParticleSystem.hpp" />
+    <ClInclude Include="MyClasses\MyParticle\MyRenderParticle\MyRenderParticle.hpp" />
+    <ClInclude Include="MyClasses\MyPhysicsWorld\MyPhysicsWorld.hpp" />
+    <ClInclude Include="MyClasses\MyShader\MyShader.hpp" />
+    <ClInclude Include="MyClasses\MySprings\MyAnchoredSpring\MyAnchoredSpring.hpp" />
+    <ClInclude Include="MyClasses\MySprings\MyParticleSpring\MyParticleSpring.hpp" />
+    <ClInclude Include="MyClasses\MyTexture\MyTexture.hpp" />
+    <ClInclude Include="MyClasses\MyVectors\MyVector2.hpp" />
+    <ClInclude Include="MyClasses\MyVectors\MyVector3.hpp" />
+    <ClInclude Include="MyClasses\Player\Player.hpp" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="tiny_obj_loader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\main.frag" />
+    <None Include="Shaders\main.vert" />
+    <None Include="Shaders\skybox.frag" />
+    <None Include="Shaders\skybox.vert" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
