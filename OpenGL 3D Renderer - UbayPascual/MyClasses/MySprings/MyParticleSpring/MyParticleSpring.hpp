@@ -15,12 +15,13 @@ class MyParticleSpring : public MyForceGenerator {
 protected:
     MyParticle* otherParticle;
     double springConstant;
+    double dampingConstant;
     double restLength;
     //* ╔═══════════════════════════════╗
     //* ║ Constructors & Deconstructors ║
     //* ╚═══════════════════════════════╝
 public:
-    MyParticleSpring(MyParticle* otherParticle, double springConstant, double restLength);
+    MyParticleSpring(MyParticle* otherParticle, double springConstant, double dampingConstant, double restLength);
 
     //* ╔═════════╗
     //* ║ Methods ║

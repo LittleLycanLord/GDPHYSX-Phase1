@@ -7,9 +7,11 @@ using namespace MyPhysics;
 //* ╚═══════════════════════════════╝
 MyParticleSpring::MyParticleSpring(MyParticle* otherParticle,
                                    double springConstant,
+                                   double dampingConstant,
                                    double restLength)
     : otherParticle(otherParticle),
       springConstant(springConstant),
+      dampingConstant(dampingConstant),
       restLength(restLength) {}
 //* ╔═════════╗
 //* ║ Methods ║
@@ -26,7 +28,7 @@ void MyParticleSpring::updateForce(MyParticle* targetParticle, double time) {
     //Damping Force
 
     MyVector3 velocity = targetParticle->getVelocity(); // Assuming targetParticle has a getVelocity method
-    double damping = -this->springConstant * velocity.DotMultiplication(force.getNormalized());
+    double damping = -this->dampingConstant * velocity.DotMultiplication(force.getNormalized());
     MyVector3 dampingForceVec = force.getNormalized() * damping;
 
     MyVector3 totalForce = dampingForceVec + springForceVec;

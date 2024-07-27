@@ -72,8 +72,8 @@ vector<MyParticleSpring*> MyPhysicsWorld::addSpring(MyParticle* particleA,
                                                     MyParticle* particleB,
                                                     double springConstant,
                                                     double restLength) {
-    MyParticleSpring* particleSpringA = new MyParticleSpring(particleB, springConstant, restLength);
-    MyParticleSpring* particleSpringB = new MyParticleSpring(particleA, springConstant, restLength);
+    MyParticleSpring* particleSpringA = new MyParticleSpring(particleB, springConstant, 3, restLength);
+    MyParticleSpring* particleSpringB = new MyParticleSpring(particleA, springConstant, 3, restLength);
 
     this->forceRegistry.add(particleA, particleSpringA);
     this->forceRegistry.add(particleB, particleSpringB);
