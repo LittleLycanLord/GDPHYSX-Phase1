@@ -56,11 +56,13 @@ void MyParticle::updateAverageVelocity(int physicsUpdateCount) {
 }
 
 void MyParticle::update(double time, int physicsUpdateCount) {
-    if (lockPosition) {
+    if (persistent) {
         if (this->position.x == this->originalPosition.x ||
             this->position.y == this->originalPosition.y ||
             this->position.z == this->originalPosition.z)
             this->position = this->originalPosition;
+        this->resetForce();
+        this->stop();
         return;
     }
     this->updatePosition(time);
@@ -121,8 +123,8 @@ bool MyParticle::getUsesGravity() { return this->usesGravity; }
 void MyParticle::setUsesGravity(bool usesGravity) { this->usesGravity = usesGravity; }
 bool MyParticle::getHasCollision() { return this->hasCollision; }
 void MyParticle::setHasCollision(bool hasCollision) { this->hasCollision = hasCollision; }
-bool MyParticle::getLockPosition() { return this->lockPosition; }
-void MyParticle::setLockPosition(bool lockPosition) { this->lockPosition = lockPosition; }
+bool MyParticle::getPersistent() { return this->persistent; }
+void MyParticle::setPersistent(bool Persistent) { this->persistent = Persistent; }
 MyVector3 MyParticle::getPosition() { return this->position; }
 void MyParticle::setPosition(MyVector3 position) { this->position = position; }
 MyVector3 MyParticle::getOriginalPosition() { return this->originalPosition; }

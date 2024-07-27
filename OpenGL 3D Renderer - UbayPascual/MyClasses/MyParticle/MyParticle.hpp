@@ -24,7 +24,7 @@ protected:
     bool isDestroyed  = false;
     bool usesGravity  = false;
     bool hasCollision = true;
-    bool lockPosition = false;
+    bool persistent = false;
     double magnitudeVelocity   = 0.0f;         //? in m/s
     MyVector3 totalVelocity    = MyVector3();  //? in m/s
     MyVector3 averageVelocity  = MyVector3();  //? in m/s
@@ -80,8 +80,8 @@ public:
     void setUsesGravity(bool usesGravity);
     bool getHasCollision();
     void setHasCollision(bool hasCollision);
-    bool getLockPosition();
-    void setLockPosition(bool lockPosition);
+    bool getPersistent();
+    void setPersistent(bool persistent);
     MyVector3 getPosition();
     void setPosition(MyVector3 position);
     MyVector3 getOriginalPosition();

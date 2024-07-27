@@ -19,7 +19,7 @@ const int WINDOW_WIDTH                          = 800;
 const int WINDOW_HEIGHT                         = 800;
 const bool DRAW_SKYBOX                          = false;
 
-const std::string WINDOW_NAME                   = "OpenGL Renderer by Ubay and Pascual";
+const std::string WINDOW_NAME                   = "Quiz Conrad Amadeus Carmelo C. Ubay";
 
 const std::string LIGHTING_FRAGMENT_SHADER_PATH = "Shaders/main.frag";
 const std::string LIGHTING_VERTEX_SHADER_PATH   = "Shaders/main.vert";
@@ -37,10 +37,11 @@ const std::string SKYBOX_BACK_TEXTURE_PATH      = "Assets/Skybox/underwater_bk.p
 //* - - - - - PHYSICS SETTINGS - - - - -
 const bool ONE_PIXEL_PER_METER                  = true;
 const bool POSITIVE_Y_ONLY                      = false;
-const bool ZOOM_IN_CENTER                       = false;
-const float ZOOM_IN_CENTER_SIZE                 = 200.0f;
+const bool ZOOM_IN_CENTER                       = true;
+const float ZOOM_IN_CENTER_SIZE                 = 50.0f;
 const float HEIGHT_OFFSET                       = -20.0f;
-const bool ORIGIN_MARKER                        = false;
+const bool ORIGIN_MARKER                        = true;
+const bool SHOW_RENDER_LINES                    = true;
 const double FRAMERATE                          = 60.0f;
 constexpr std::chrono::nanoseconds TIMESTEP     = 16ms;
 

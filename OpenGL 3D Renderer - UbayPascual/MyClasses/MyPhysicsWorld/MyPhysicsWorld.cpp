@@ -144,7 +144,7 @@ void MyPhysicsWorld::addAnchoredRope(MyAnchoredRope* rope, bool showSegments) {
             newParticle->setUsesGravity(rope->getUsesGravity());
             if (i == 0) {
                 newParticle->setPosition(MyVector3(rope->getAnchorPoint()));
-                newParticle->setLockPosition(true);
+                newParticle->setPersistent(true);
             } else
                 newParticle->setPosition(MyVector3(
                     rope->getParticles()[i - 1]->getPosition().x,
@@ -173,35 +173,31 @@ void MyPhysicsWorld::addAnchoredChain(MyAnchoredChain* chain, bool showSegments)
         cout << "Chain length has to be a positive integer." << endl;
         return;
     }
-    for (int i = 0; i < chain->getSegmentCount(); i++) {
+    if (!chain->getAnchorParticle()->getPersistent())
+        chain->getAnchorParticle()->setPersistent(true);
+    this->addParticle(chain->getAnchorParticle(), false);
+
+    for (int i = 1; i < chain->getSegmentCount() + 1; i++) {
         MyParticle* newParticle;
         if (showSegments) {
             newParticle = new MyRenderParticle(chain->getModel(), chain->getTint());
-            newParticle->setRadius(0.3f);
         } else
             newParticle = new MyParticle();
 
-        if (i == 0) {
-            newParticle->setOriginalPosition(MyVector3(chain->getAnchorPoint()), true);
-            newParticle->setLockPosition(true);
-            this->addParticle(newParticle, false);
-        } else {
-            newParticle->setPosition(
-                MyVector3(chain->getParticles()[i - 1]->getPosition().x,
-                          chain->getParticles()[i - 1]->getPosition().y - chain->getSegmentLength(),
-                          chain->getParticles()[i - 1]->getPosition().z));
-            this->addParticle(newParticle, chain->getUsesGravity());
-        }
+        newParticle->setRadius(0.3f);
+        newParticle->setPosition(
+            MyVector3(chain->getParticles()[i - 1]->getPosition().x,
+                      chain->getParticles()[i - 1]->getPosition().y - chain->getSegmentLength(),
+                      chain->getParticles()[i - 1]->getPosition().z));
+        this->addParticle(newParticle, chain->getUsesGravity());
 
         newParticle->setHasCollision(false);
         chain->addParticle(newParticle);
-        if (i > 0) {
-            MyVector3 segmentLength =
-                newParticle->getPosition() - chain->getParticles()[i - 1]->getPosition();
-            chain->addSegment(this->addRod(
-                newParticle, chain->getParticles()[i - 1], segmentLength.getMagnitude()));
-            cout << "Segment Added: " << segmentLength.getMagnitude() << " units." << endl;
-        }
+
+        MyVector3 segmentLength =
+            newParticle->getPosition() - chain->getParticles()[i - 1]->getPosition();
+        chain->addSegment(
+            this->addRod(newParticle, chain->getParticles()[i - 1], segmentLength.getMagnitude()));
     }
 }
 

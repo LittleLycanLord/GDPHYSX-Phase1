@@ -17,13 +17,12 @@ class MyAnchoredChain {
 protected:
     My3DModel* model;
     MyVector3 tint;
-    MyVector3 anchorPoint;
+    MyParticle* anchorParticle;
     unsigned int segmentCount;
     double segmentLength;
     double totalLength;
-    bool usesGravity;
+    bool usesGravity = true;
 
-    MyRod* headSegment;
     vector<MyParticle*> particles;
     vector<MyRod*> segments;
     //* ╔═══════════════════════════════╗
@@ -33,14 +32,15 @@ public:
     //? Unknown chain segment count
     MyAnchoredChain(My3DModel* model,
                     MyVector3 tint,
-                    MyVector3 anchorPoint,
+                    MyParticle* anchorParticle,
                     double segmentLength,
                     double totalLength,
                     bool usesGravity);
+
     //? Unknown chain segment length
     MyAnchoredChain(My3DModel* model,
                     MyVector3 tint,
-                    MyVector3 anchorPoint,
+                    MyParticle* anchorParticle,
                     unsigned int segmentCount,
                     double totalLength,
                     bool usesGravity);
@@ -59,7 +59,7 @@ private:
 public:
     My3DModel* getModel();
     MyVector3 getTint();
-    MyVector3 getAnchorPoint();
+    MyParticle* getAnchorParticle();
     unsigned int getSegmentCount();
     double getSegmentLength();
     double getTotalLength();
