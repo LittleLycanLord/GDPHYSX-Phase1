@@ -20,7 +20,19 @@ void MyParticleSpring::updateForce(MyParticle* targetParticle, double time) {
     double magnitude   = force.getMagnitude();
 
     double springForce = -this->springConstant * abs(magnitude - this->restLength);
-    targetParticle->addForce(force.getNormalized() * springForce);
+    MyVector3 springForceVec = force.getNormalized() * springForce;
+    //targetParticle->addForce(force.getNormalized() * springForce);
+
+    //Damping Force
+
+    MyVector3 velocity = targetParticle->getVelocity(); // Assuming targetParticle has a getVelocity method
+    double damping = -this->springConstant * velocity.DotMultiplication(force.getNormalized());
+    MyVector3 dampingForceVec = force.getNormalized() * damping;
+
+    MyVector3 totalForce = dampingForceVec + springForceVec;
+
+    targetParticle->addForce(totalForce);
+
 }
 
 //* ╔═══════════════════╗
