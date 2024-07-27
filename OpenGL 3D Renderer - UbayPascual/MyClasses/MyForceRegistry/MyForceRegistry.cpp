@@ -15,9 +15,11 @@ void MyForceRegistry::add(MyParticle* particle, MyForceGenerator* generator) {
     newRegistry.generator               = generator;
     for (MyParticleForceRegistry registry : this->registry) {
         //? Generators should only affect the same particle once.
+
         if (newRegistry.particle == registry.particle &&
-            newRegistry.generator == registry.generator)
+            newRegistry.generator == registry.generator) {
             return;
+        }
     }
     this->registry.push_back(newRegistry);
 }
@@ -28,10 +30,11 @@ void MyForceRegistry::remove(MyParticle* particle, MyForceGenerator* generator) 
 }
 void MyForceRegistry::clear() { this->registry.clear(); }
 void MyForceRegistry::updateForces(double time) {
-    for (MyParticleForceRegistry force : this->registry) {
-        force.generator->updateForce(force.particle, time);
+    for (MyParticleForceRegistry registedForce : this->registry) {
+        registedForce.generator->updateForce(registedForce.particle, time);
     }
 }
+
 list<MyForceGenerator*> MyForceRegistry::getAppliedForces() {
     list<MyForceGenerator*> appliedForces;
     MyForceGenerator* lastAddedAppliedForceToList = this->registry.begin()->generator;

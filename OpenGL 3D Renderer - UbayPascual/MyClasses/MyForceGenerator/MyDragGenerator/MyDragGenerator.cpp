@@ -12,17 +12,14 @@ MyDragGenerator::MyDragGenerator(double dragCoefficient1, double dragCoefficient
 //* ╔═════════╗
 //* ║ Methods ║
 //* ╚═════════╝
-void MyDragGenerator::updateForce(MyParticle* targetParticle, double time) {
-    MyVector3 force           = MyVector3();
-    MyVector3 currentVelocity = targetParticle->getVelocity();
-    double magnitude          = currentVelocity.getMagnitude();
-
+void MyDragGenerator::updateForce(MyParticle* affectedParticle, double time) {
+    double magnitude = affectedParticle->getVelocity().getMagnitude();
     if (magnitude <= 0) return;
 
     double dragForce    = (dragCoefficient1 * magnitude) + (dragCoefficient2 * magnitude);
-    MyVector3 direction = currentVelocity.getNormalized();
+    MyVector3 direction = affectedParticle->getVelocity().getNormalized();
 
-    targetParticle->addForce(direction * -dragForce);
+    affectedParticle->addForce(direction * -dragForce);
 }
 
 //* ╔═══════════════════╗

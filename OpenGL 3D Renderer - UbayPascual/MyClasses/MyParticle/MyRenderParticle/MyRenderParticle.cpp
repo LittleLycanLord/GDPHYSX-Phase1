@@ -50,7 +50,7 @@ void MyRenderParticle::updateModel() {
     if (this->isDestroyed) {
         this->model->destroy();
     } else {
-        this->model->setScale(glm::vec3(this->radius));
+        this->model->setScale(glm::vec3(this    ->radius));
         this->model->setPosition(glm::vec3(this->position));
     }
 }

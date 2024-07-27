@@ -10,9 +10,9 @@ MyGravityGenerator::MyGravityGenerator(MyVector3 gravity) : gravity(gravity) {}
 //* ╔═════════╗
 //* ║ Methods ║
 //* ╚═════════╝
-void MyGravityGenerator::updateForce(MyParticle* targetParticle, double time) {
-    if (targetParticle->getMass() <= 0) return;
-    targetParticle->addForce(this->gravity * targetParticle->getMass());
+void MyGravityGenerator::updateForce(MyParticle* affectedParticle, double time) {
+    if (affectedParticle->getMass() <= 0) return;
+    affectedParticle->addForce(this->gravity * affectedParticle->getMass());
 }
 
 //* ╔═══════════════════╗

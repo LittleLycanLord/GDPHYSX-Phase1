@@ -62,7 +62,7 @@ void MyParticleSystem::update(double time, int physicsUpdateCount) {
             newParticle->setLifetime(generateLifetime(aRandomLifetime));
             //* - - - - - END OF PARTICLE DETAILS - - - - -
 
-            this->physicsWorld->addParticle(newParticle);
+            this->physicsWorld->addParticle(newParticle, true);
             this->particleCount--;
         }
         this->lifetime -= time;

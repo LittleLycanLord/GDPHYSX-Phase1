@@ -1,39 +1,38 @@
 #pragma once
 #include "../../MyParticle/MyParticle.hpp"
-#include "../../MyParticleContact/MyParticleContact.hpp"
-#include "../MyParticleLink.hpp"
 #include "../../MyVectors/MyVector3.hpp"
+#include "../MyRenderLine.hpp"
+#include "glad/glad.h"
 #include "stdafx.h"
 
-namespace MyPhysics {
+using namespace MyPhysics;
 
-using namespace std;
-
-class MyRod : public MyParticleLink {
+namespace rendering {
+class MyParticleLine : public MyRenderLine {
     //* ╔════════════╗
     //* ║ Attributes ║
     //* ╚════════════╝
-protected:
-    double length;
-    double restitution = 0.0f;
+private:
+    MyParticle* particleA;
+    MyParticle* particleB;
 
     //* ╔═══════════════════════════════╗
     //* ║ Constructors & Deconstructors ║
     //* ╚═══════════════════════════════╝
 public:
-    MyRod(MyParticle* particleA, MyParticle* particleB, double length);
+    MyParticleLine(MyParticle* particleA, MyParticle* particleB);
+    MyParticleLine(MyParticle* particleA, MyParticle* particleB, MyVector3 color);
 
     //* ╔═════════╗
     //* ║ Methods ║
     //* ╚═════════╝
 public:
-    virtual MyParticleContact* getContact() override;
+    void update(mat4 projectionMatrix);
 
-protected:
-private:
     //* ╔═══════════════════╗
     //* ║ Getters & Setters ║
     //* ╚═══════════════════╝
+
 public:
 };
-}  // namespace MyPhysics
+}  // namespace rendering

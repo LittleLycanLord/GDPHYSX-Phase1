@@ -24,7 +24,7 @@ public:
     //* ║ Methods ║
     //* ╚═════════╝
 public:
-    void updateForce(MyParticle* targetParticle, double time) override;
+    void updateForce(MyParticle* affectedParticle, double time) override;
 
 private:
     //* ╔═══════════════════╗

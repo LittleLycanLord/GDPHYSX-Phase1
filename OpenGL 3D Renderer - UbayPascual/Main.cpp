@@ -18,12 +18,15 @@
 #include "MyClasses/MyLights/MySpotLight/MySpotLight.hpp"
 #include "MyClasses/MyNormal/MyNormal.hpp"
 #include "MyClasses/MyParticle/MyParticle.hpp"
+#include "MyClasses/MyParticleConnections/MyAnchoredRope/MyAnchoredRope.hpp"
+#include "MyClasses/MyParticleConnections/MyAnchoredChain/MyAnchoredChain.hpp"
 #include "MyClasses/MyParticle/MyParticleSystem/MyParticleSystem.hpp"
 #include "MyClasses/MyParticle/MyRenderParticle/MyRenderParticle.hpp"
 #include "MyClasses/MyParticleContact/MyParticleContact.hpp"
 #include "MyClasses/MyParticleLink/MyParticleLink.hpp"
 #include "MyClasses/MyParticleLink/MyRod/MyRod.hpp"
 #include "MyClasses/MyPhysicsWorld/MyPhysicsWorld.hpp"
+#include "MyClasses/MyRenderLine/MyRenderLine.hpp"
 #include "MyClasses/MyShader/MyShader.hpp"
 #include "MyClasses/MyTexture/MyTexture.hpp"
 #include "MyClasses/Player/Player.hpp"
@@ -383,29 +386,44 @@ int main(void) {
             {new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
              new MyRenderParticle(particleModel, MyVector3(0.0f, 1.0f, 0.0f)),
              new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f)),
-             new MyRenderParticle(particleModel, MyVector3(1.0f, 1.0f, 1.0f))});
-        physicsWorld.getParticleListAsVector()[0]->setPosition(MyVector3(100.0f, 0.0f, 0.0f));
-        physicsWorld.getParticleListAsVector()[1]->setPosition(MyVector3(0.0f, 100.0f, 0.0f));
-        physicsWorld.getParticleListAsVector()[2]->setPosition(MyVector3(0.0f, 0.0f, 100.0f));
+             new MyRenderParticle(particleModel, MyVector3(1.0f, 1.0f, 1.0f))},
+            false);
+        physicsWorld.getParticleListAsVector()[0]->setPosition(MyVector3(10.0f, 0.0f, 0.0f));
+        physicsWorld.getParticleListAsVector()[0]->setHasCollision(false);
+        physicsWorld.getParticleListAsVector()[0]->setRadius(0.1f);
+        physicsWorld.getParticleListAsVector()[1]->setPosition(MyVector3(0.0f, 10.0f, 0.0f));
+        physicsWorld.getParticleListAsVector()[1]->setHasCollision(false);
+        physicsWorld.getParticleListAsVector()[1]->setRadius(0.1f);
+        physicsWorld.getParticleListAsVector()[2]->setPosition(MyVector3(0.0f, 0.0f, 10.0f));
+        physicsWorld.getParticleListAsVector()[2]->setHasCollision(false);
+        physicsWorld.getParticleListAsVector()[2]->setRadius(0.1f);
+        physicsWorld.getParticleListAsVector()[3]->setHasCollision(false);
+        physicsWorld.getParticleListAsVector()[3]->setRadius(0.1f);
         originParticles = 4;
     }
     //* - - - - - END OF PARTICLE SETUP - - - - -
 
     //* - - - - - PARTICLES - - - - -
-    physicsWorld.addParticles({
-       //? Particle System Test
-       // new MyParticleSystem(
-       // particleModel, MyVector3(0.0f, 0.0f, 0.0f), 10.0f, sparkCount, &physicsWorld)
-       //? Contact Resolver Test
+
+    //? Particle System Test
+    // new MyParticleSystem(
+    // particleModel, MyVector3(0.0f, 0.0f, 0.0f), 10.0f, sparkCount, &physicsWorld)
+    //? Contact Resolver Test
     //    new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
     //    new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f))
-       //? Rod, Particle Spring, and Anchored Spring Test
-         new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
-         new MyRenderParticle(particleModel, MyVector3(0.5f, 0.0f, 0.0f)),
-         new MyRenderParticle(particleModel, MyVector3(0.0f, 1.0f, 0.0f)),
-         new MyRenderParticle(particleModel, MyVector3(0.0f, 0.5f, 0.0f)),
-         new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f))
-    });
+    //? Rod Test
+    physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
+                             false);
+    physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(0.5f, 0.0f, 0.0f)),
+                             false);
+    //? Particle Spring Test
+    physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(0.0f, 1.0f, 0.0f)),
+                             false);
+    physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(0.0f, 0.5f, 0.0f)),
+                             false);
+    //? Anchored Spring Test
+    physicsWorld.addParticle(new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f)),
+                             true);
 
     //? Contact Resolver Test: With Collision Detection
     // physicsWorld.getParticleListAsVector()[0 + originParticles]->setPosition(
@@ -431,45 +449,109 @@ int main(void) {
     //               physicsWorld.getParticleListAsVector()[1 + originParticles]->getPosition())
     //         .getNormalized());
 
-    //? Rod
-    physicsWorld.getParticleListAsVector()[0 + originParticles]->setPosition(
-        MyVector3(-75.0f, 25.0f, 0.0f));
-    physicsWorld.getParticleListAsVector()[1 + originParticles]->setPosition(
-        MyVector3(-25.0f, -25.0f, 0.0f));
-    MyVector3 rodLength =
-        physicsWorld.getParticleListAsVector()[0 + originParticles]->getPosition() -
-        physicsWorld.getParticleListAsVector()[1 + originParticles]->getPosition();
-    physicsWorld.addRod(physicsWorld.getParticleListAsVector()[0 + originParticles],
-                        physicsWorld.getParticleListAsVector()[1 + originParticles],
-                        rodLength.getMagnitude());
-    // physicsWorld.getParticleListAsVector()[0 + originParticles]->setUsesGravity(true);
-    // physicsWorld.getParticleListAsVector()[1 + originParticles]->setUsesGravity(true);
-    physicsWorld.getParticleListAsVector()[0 + originParticles]->addForce(
-        MyVector3(0.0f, 1000.0f, 0.0f));
-    // cout << "70.710678 | " << rodLength.getMagnitude() << endl;
+    // //? Rod
+    // //? Create the 2 Ends
+    // physicsWorld.getParticleListAsVector()[0 + originParticles]->setPosition(
+    //     MyVector3(-10.0f, 10.0f, 0.0f));
+    // physicsWorld.getParticleListAsVector()[1 + originParticles]->setPosition(
+    //     MyVector3(-10.0f, 5.0f, 0.0f));
 
-    //? Particle Spring
-    physicsWorld.getParticleListAsVector()[2 + originParticles]->setPosition(
-        MyVector3(-25.0f, 25.0f, 0.0f));
-    physicsWorld.getParticleListAsVector()[2 + originParticles]->setUsesGravity(true);
-    physicsWorld.getParticleListAsVector()[3 + originParticles]->setPosition(
-        MyVector3(25.0f, -25.0f, 0.0f));
-    MyVector3 particleSpringLength =
-        physicsWorld.getParticleListAsVector()[2 + originParticles]->getPosition() -
-        physicsWorld.getParticleListAsVector()[3 + originParticles]->getPosition();
-    physicsWorld.addSpring(physicsWorld.getParticleListAsVector()[2 + originParticles],
-                           physicsWorld.getParticleListAsVector()[3 + originParticles],
-                           5.0f,
-                           particleSpringLength.getMagnitude());
+    // //? Connect the 2 Ends via a Rod
+    // MyVector3 rodLength =
+    //     physicsWorld.getParticleListAsVector()[0 + originParticles]->getPosition() -
+    //     physicsWorld.getParticleListAsVector()[1 + originParticles]->getPosition();
+    // physicsWorld.addRod(physicsWorld.getParticleListAsVector()[0 + originParticles],
+    //                     physicsWorld.getParticleListAsVector()[1 + originParticles],
+    //                     rodLength.getMagnitude());
 
-    //? Anchored Spring
-    physicsWorld.getParticleListAsVector()[4 + originParticles]->setPosition(
-        MyVector3(25.0f, 25.0f, 0.0f));
-    physicsWorld.getParticleListAsVector()[4 + originParticles]->setUsesGravity(true);
-    physicsWorld.addSpring(physicsWorld.getParticleListAsVector()[4 + originParticles],
-                           MyVector3(75.0f, -25.0f, 0.0f),
-                           5.0f,
-                           1.0f);
+    // //? Test the Rod's Behaviour
+    // physicsWorld.getParticleListAsVector()[0 + originParticles]->addForce(
+    //     MyVector3(1000.0f, 0.0f, 0.0f));
+    // physicsWorld.getParticleListAsVector()[1 + originParticles]->addForce(
+    //     MyVector3(-1000.0f, 0.0f, 0.0f));
+    // //* Confirmed Working
+
+    // //? Particle Spring
+    // //? Create the 2 Ends
+    // physicsWorld.getParticleListAsVector()[2 + originParticles]->setPosition(
+    //     MyVector3(-5.0f, 10.0f, 0.0f));
+    // physicsWorld.getParticleListAsVector()[2 + originParticles]->setUsesGravity(false);
+    // physicsWorld.getParticleListAsVector()[3 + originParticles]->setPosition(
+    //     MyVector3(-5.0f, 0.0f, 0.0f));
+    // physicsWorld.getParticleListAsVector()[3 + originParticles]->setUsesGravity(false);
+
+    // //? Create the Particle Spring
+    // MyVector3 particleSpringLength =
+    //     physicsWorld.getParticleListAsVector()[2 + originParticles]->getPosition() -
+    //     physicsWorld.getParticleListAsVector()[3 + originParticles]->getPosition();
+    // physicsWorld.addSpring(physicsWorld.getParticleListAsVector()[2 + originParticles],
+    //                        physicsWorld.getParticleListAsVector()[3 + originParticles],
+    //                        5.0f,
+    //                        particleSpringLength.getMagnitude());
+
+    // //? Anchored Spring
+    // //? Create the Attached Particle
+    // physicsWorld.getParticleListAsVector()[4 + originParticles]->setPosition(
+    //     MyVector3(0.0f, -0.1f, 0.0f));
+
+    // //? Create the Anchored Spring
+    // physicsWorld.addSpring(
+    //     physicsWorld.getParticleListAsVector()[4 + originParticles],  //? Particle to Attach
+    //     MyVector3(0.0f, 10.0f, 0.0f),                                 //? Anchor Point
+    //     4.5f,                                                         //? Spring Constant
+    //     10.0f);                                                       //? Length
+
+    // //? Anchored Rope
+    // //? Create the Rope
+    // MyAnchoredRope* anchoredRope =
+    //     new MyAnchoredRope(particleModel,                  //? Model
+    //                        MyVector3(1.0f, 0.0f, 0.0f),    //? Tint
+    //                        MyVector3(5.0f, 10.0f, 0.0f),  //? Anchor Point
+    //                        10,                             //? Spring Constant
+    //                        (unsigned int)10,               //? Segment Count
+    //                        9.0f,                           //? Total Rest Length
+    //                        true);                          //? Uses Gravity
+    // physicsWorld.addAnchoredRope(anchoredRope);
+
+    // //? Create the Rope Weight
+    // MyRenderParticle* ropeWeight = new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f,
+    // 0.0f)); ropeWeight->setMass(1.0f); ropeWeight->setUsesGravity(true);
+    // ropeWeight->setRadius(1.0f);
+    // ropeWeight->setPosition(MyVector3(5.0f, 0.0f, 0.0f));
+    // physicsWorld.addParticle(ropeWeight);
+
+    // //? Connect the Rope Weight to the Rope
+    // physicsWorld.addSpring(anchoredRope->getParticles()[anchoredRope->getSegmentCount() - 1],
+    //                        ropeWeight,
+    //                        1.0f,
+    //                        anchoredRope->getSegmentRestLength());
+    // ropeWeight->addForce(MyVector3(0.0f, 0.0f, 0.0f));
+
+    // //? Anchored Chain
+    // //? Create the Chain
+    MyAnchoredChain* anchoredChain =
+        new MyAnchoredChain(particleModel,                  //? Model
+                            MyVector3(0.0f, 0.0f, 1.0f),    //? Tint
+                            MyVector3(10.0f, 10.0f, 0.0f),  //? Anchor Point
+                            (unsigned int)2,                //? Segment Count
+                            9.0f,                           //? Total Length
+                            true);                          //? Uses Gravity
+    physicsWorld.addAnchoredChain(anchoredChain, true);
+
+    // //? Create the Chain Weight
+    // MyRenderParticle* chainWeight =
+    //     new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f));
+    // chainWeight->setMass(1.0f);
+    // chainWeight->setUsesGravity(true);
+    // chainWeight->setRadius(1.0f);
+    // chainWeight->setPosition(MyVector3(10.0f, 0.0f, 0.0f));
+    // physicsWorld.addParticle(chainWeight, true);
+
+    // //? Connect the Chain Weight to the Chain
+    // physicsWorld.addRod(anchoredChain->getParticles()[anchoredChain->getSegmentCount() - 1],
+    //                     chainWeight,
+    //                     anchoredChain->getSegmentLength());
+    // chainWeight->addForce(MyVector3(0.0f, 0.0f, 0.0f));
 
     //* - - - - - END OF PARTICLES - - - - -
 
@@ -491,7 +573,6 @@ int main(void) {
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         activeCamera->setView(
             glm::lookAt(activeCamera->getPosition(), activeCamera->getViewCenter(), WorldUp));
 
@@ -512,12 +593,10 @@ int main(void) {
                 //* - - - - - DEBUGGING - - - - -
                 //* - - - - - END OF DEBUGGING - - - - -
 
-                physicsWorld.update((double)millisecond.count() / 1000);
                 //? Place physics related updates ABOVE this line
-
+                physicsWorld.update((double)millisecond.count() / 1000);
                 currentNanosecond -= currentNanosecond;
             }
-        } else {
         }
         //* - - - - - END OF FIXED UPDATE - - - - -
 
@@ -759,8 +838,17 @@ int main(void) {
                     GL_TRIANGLES, 0, GLint(model->getFullVertexData().size() / STRIDE_LENGTH));
             //* - - - - - END OF MODEL RENDERING - - - - -
         }
-
         //* - - - - - END OF MODEL UPDATE - - - - -
+
+        //* - - - - - PARTICLE LINE RENDERING - - - - -
+        for (MyParticleLine* line : physicsWorld.lines) {
+            if (SHOW_RENDER_LINES) {
+                line->update(activeCamera->getProjection() * activeCamera->getView());
+                line->draw();
+            }
+        }
+        //* - - - - - END OF PARTICLE LINE RENDERING - - - - -
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
