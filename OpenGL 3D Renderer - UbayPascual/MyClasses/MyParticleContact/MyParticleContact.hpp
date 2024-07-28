@@ -17,7 +17,8 @@ private:
     double restitition;
     double depth;
     MyVector3 contactNormal;
-    
+    bool isRod = false;
+
     //* ╔═══════════════════════════════╗
     //* ║ Constructors & Deconstructors ║
     //* ╚═══════════════════════════════╝
@@ -32,8 +33,10 @@ public:
     //* ║ Methods ║
     //* ╚═════════╝
 protected:
-    void resolveInterpenetration(double time);
-    void resolveVelocity(double time);
+    void resolveInterpenetrationWithoutConsiderationToMass(double time);
+    void resolveInterpenetrationWithConsiderationToMass(double time);
+    void resolveVelocityWithConsiderationToMass(double time);
+    void resolveVelocityWithoutConsiderationToMass(double time);
 
 public:
     double calculateSeparatingSpeed();
@@ -45,6 +48,8 @@ public:
 public:
     double getDepth();
     void setDepth(double depth);
+    bool getIsRod();
+    void setIsRod(bool isRod);
     double getRestitition();
     void setRestitition(double restitition);
     MyVector3 getContactNormal();

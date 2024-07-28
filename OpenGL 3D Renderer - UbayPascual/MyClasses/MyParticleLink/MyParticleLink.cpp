@@ -13,7 +13,7 @@ MyParticleLink::MyParticleLink(MyParticle* particleA, MyParticle* particleB)
 //* ║ Methods ║
 //* ╚═════════╝
 MyParticleContact* MyParticleLink::getContact() { return nullptr; }
-double MyParticleLink::getCurrentLength() {
+double MyParticleLink::getDistanceBetweenParticles() {
     return MyVector3(this->particleA->getPosition() - this->particleB->getPosition())
         .getMagnitude();
 }

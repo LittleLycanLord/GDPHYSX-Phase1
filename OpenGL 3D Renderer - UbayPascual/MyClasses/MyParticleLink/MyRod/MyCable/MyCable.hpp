@@ -1,37 +1,37 @@
 #pragma once
-#include "../MyForceGenerator.hpp"
+#include "../../../MyParticle/MyParticle.hpp"
+#include "../../../MyParticleContact/MyParticleContact.hpp"
+#include "../../../MyVectors/MyVector3.hpp"
+#include "../MyRod.hpp"
 #include "stdafx.h"
 
 namespace MyPhysics {
 
 using namespace std;
 
-class MyGravityGenerator : public MyForceGenerator {
+class MyCable : public MyRod {
     //* ╔════════════╗
     //* ║ Attributes ║
     //* ╚════════════╝
 protected:
-    MyVector3 gravity = MyVector3(DEFAULT_GRAVITY_X, DEFAULT_GRAVITY_Y, DEFAULT_GRAVITY_Z);
 
     //* ╔═══════════════════════════════╗
     //* ║ Constructors & Deconstructors ║
     //* ╚═══════════════════════════════╝
 public:
-    MyGravityGenerator();
-    MyGravityGenerator(MyVector3 gravity);
+    MyCable(MyParticle* particleA, MyParticle* particleB, double length);
 
     //* ╔═════════╗
     //* ║ Methods ║
     //* ╚═════════╝
 public:
-    void updateForce(MyParticle* affectedParticle, double time) override;
+    virtual MyParticleContact* getContact() override;
 
+protected:
 private:
     //* ╔═══════════════════╗
     //* ║ Getters & Setters ║
     //* ╚═══════════════════╝
 public:
-    MyVector3 getGravity();
-    void setGravity(MyVector3 gravity);
 };
 }  // namespace MyPhysics

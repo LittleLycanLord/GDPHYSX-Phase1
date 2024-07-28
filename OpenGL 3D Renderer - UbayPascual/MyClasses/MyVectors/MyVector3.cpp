@@ -6,9 +6,9 @@ using namespace std;
 //* ╔═══════════════════════════════╗
 //* ║ Constructors & Deconstructors ║
 //* ╚═══════════════════════════════╝
-MyVector3::MyVector3() : x(0), y(0), z(0){};
-MyVector3::MyVector3(double xyz) : x(xyz), y(xyz), z(xyz){};
-MyVector3::MyVector3(double x, double y, double z) : x(x), y(y), z(z){};
+MyVector3::MyVector3() : x(0), y(0), z(0) {};
+MyVector3::MyVector3(double xyz) : x(xyz), y(xyz), z(xyz) {};
+MyVector3::MyVector3(double x, double y, double z) : x(x), y(y), z(z) {};
 MyVector3::MyVector3(glm::vec3 xyz) : x(xyz.x), y(xyz.y), z(xyz.z) {}
 
 //* ╔═════════╗
@@ -56,7 +56,7 @@ void MyVector3::operator*=(const MyVector3 multiplicand) {
     this->y *= multiplicand.y;
     this->z *= multiplicand.z;
 }
-double MyVector3::DotMultiplication(MyVector3 multiplicand) {
+double MyVector3::DotProduct(MyVector3 multiplicand) {
     return (this->x * multiplicand.x) + (this->y * multiplicand.y) + (this->z * multiplicand.z);
 }
 MyVector3 MyVector3::CrossMultiplication(MyVector3 multiplicand) {
@@ -98,9 +98,7 @@ void MyVector3::operator/=(const MyVector3 dividend) {
         if (DEBUG_MODE_MATH) std::cout << "- - - - - ERROR: DIVIDING BY 0! - - - - -" << std::endl;
     }
 }
-double MyVector3::getMagnitude() {
-    return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
-}
+double MyVector3::getMagnitude() { return sqrt(this->getSquareMagnitude()); }
 double MyVector3::getSquareMagnitude() {
     return pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2);
 }

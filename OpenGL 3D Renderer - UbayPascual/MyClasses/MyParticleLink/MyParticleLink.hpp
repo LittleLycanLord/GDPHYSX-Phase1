@@ -29,7 +29,7 @@ public:
     virtual MyParticleContact* getContact();
 
 protected:
-    double getCurrentLength();
+    double getDistanceBetweenParticles();
 
 private:
     //* ╔═══════════════════╗

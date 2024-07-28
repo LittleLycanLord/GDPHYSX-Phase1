@@ -24,12 +24,13 @@ protected:
     bool isDestroyed  = false;
     bool usesGravity  = false;
     bool hasCollision = true;
-    bool persistent = false;
+    bool persistent   = false;
     double magnitudeVelocity   = 0.0f;         //? in m/s
     MyVector3 totalVelocity    = MyVector3();  //? in m/s
     MyVector3 averageVelocity  = MyVector3();  //? in m/s
     MyVector3 velocity         = MyVector3();  //? in m/s
     MyVector3 acceleration     = MyVector3();  //? in m/s^2
+    MyVector3 testAcceleration = MyVector3();  //? in m/s^2
 
     MyVector3 accumulatedForce = MyVector3();  //? in kg m/s^2
 
@@ -95,5 +96,6 @@ public:
     MyVector3 getAcceleration();
     void setAcceleration(MyVector3 acceleration);
     void setAcceleration(double x, double y, double z);
+    MyVector3 getTestAcceleration();
 };
 }  // namespace MyPhysics

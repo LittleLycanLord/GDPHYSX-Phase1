@@ -4,22 +4,22 @@
 using namespace std::chrono_literals;
 
 //* - - - - - DEBUG - - - - -
-const bool DEBUG_MODE                           = false;
-const bool DEBUG_MODE_CAMERA_MOVEMENT           = true;
-const bool DEBUG_MODE_MODEL_TINTING             = false;
-const bool DEBUG_MODE_MATH                      = true;
-const bool DEBUG_MODE_PHYSICS                   = true;
-const bool DEBUG_MODE_PHYSICS_TIME              = false;
-const bool DEBUG_MODE_PROGRAMMING_CHALLENGE_1   = false;
-const int COUT_PRECISION                        = 2;
+const bool DEBUG_MODE                         = false;
+const bool DEBUG_MODE_CAMERA_MOVEMENT         = true;
+const bool DEBUG_MODE_MODEL_TINTING           = false;
+const bool DEBUG_MODE_MATH                    = true;
+const bool DEBUG_MODE_PHYSICS                 = true;
+const bool DEBUG_MODE_PHYSICS_TIME            = false;
+const bool DEBUG_MODE_PROGRAMMING_CHALLENGE_1 = false;
+const int COUT_PRECISION                      = 2;
 //* - - - - - END OF DEBUG - - - - -
 
 //* - - - - - RENDERING SETTINGS - - - - -
-const int WINDOW_WIDTH                          = 800;
-const int WINDOW_HEIGHT                         = 800;
-const bool DRAW_SKYBOX                          = false;
+const int WINDOW_WIDTH                        = 800;
+const int WINDOW_HEIGHT                       = 800;
+const bool DRAW_SKYBOX                        = false;
 
-const std::string WINDOW_NAME                   = "Quiz Conrad Amadeus Carmelo C. Ubay";
+const std::string WINDOW_NAME = "OpenGL Physics Engine and Renderer - Phase 2, Ubay & Pascual";
 
 const std::string LIGHTING_FRAGMENT_SHADER_PATH = "Shaders/main.frag";
 const std::string LIGHTING_VERTEX_SHADER_PATH   = "Shaders/main.vert";
@@ -37,11 +37,12 @@ const std::string SKYBOX_BACK_TEXTURE_PATH      = "Assets/Skybox/underwater_bk.p
 //* - - - - - PHYSICS SETTINGS - - - - -
 const bool ONE_PIXEL_PER_METER                  = true;
 const bool POSITIVE_Y_ONLY                      = false;
-const bool ZOOM_IN_CENTER                       = true;
-const float ZOOM_IN_CENTER_SIZE                 = 50.0f;
+const bool ZOOM_IN_CENTER                       = false;
+const float ZOOM_IN_CENTER_SIZE                 = 200.0f;
 const float HEIGHT_OFFSET                       = -20.0f;
-const bool ORIGIN_MARKER                        = true;
+const bool ORIGIN_MARKER                        = false;
 const bool SHOW_RENDER_LINES                    = true;
+const bool PRINT_COLLISIONS                     = false;
 const double FRAMERATE                          = 60.0f;
 constexpr std::chrono::nanoseconds TIMESTEP     = 16ms;
 

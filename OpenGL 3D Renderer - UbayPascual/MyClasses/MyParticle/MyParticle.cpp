@@ -43,12 +43,11 @@ void MyParticle::updatePosition(double time) {
                                    pow((finalPosition.y - initialPosition.y), 2) +
                                    pow((finalPosition.z - initialPosition.z), 2)) *
                               FRAMERATE;
-    this->updateModel();
 }
 void MyParticle::updateVelocity(double time) {
     this->acceleration += this->accumulatedForce * (1 / this->mass);
     this->velocity = this->velocity + (this->acceleration * time);
-    this->velocity = this->velocity * powf(damping, time);
+    this->velocity = this->velocity * pow(damping, time);
 }
 void MyParticle::updateAverageVelocity(int physicsUpdateCount) {
     this->totalVelocity += this->velocity;
@@ -57,15 +56,17 @@ void MyParticle::updateAverageVelocity(int physicsUpdateCount) {
 
 void MyParticle::update(double time, int physicsUpdateCount) {
     if (persistent) {
-        if (this->position.x == this->originalPosition.x ||
-            this->position.y == this->originalPosition.y ||
-            this->position.z == this->originalPosition.z)
+        if (this->position.x != this->originalPosition.x ||
+            this->position.y != this->originalPosition.y ||
+            this->position.z != this->originalPosition.z)
             this->position = this->originalPosition;
         this->resetForce();
         this->stop();
+        this->updateModel();
         return;
     }
     this->updatePosition(time);
+    this->updateModel();
     this->updateVelocity(time);
     //* - - - - - ADDITIONAL UPDATES - - - - -
     // this->updateAverageVelocity(physicsUpdateCount);
@@ -92,6 +93,7 @@ void MyParticle::moveTowards(MyVector3 target, double magnitudeVelocity) {
 void MyParticle::addForce(MyVector3 force) { this->accumulatedForce += force; }
 void MyParticle::resetForce() {
     this->accumulatedForce = MyVector3(0.0f, 0.0f, 0.0f);
+    this->testAcceleration = this->acceleration;
     this->acceleration     = MyVector3(0.0f, 0.0f, 0.0f);
 }
 void MyParticle::extendLifetime(double amount) { this->lifetime += amount; }
@@ -145,3 +147,4 @@ void MyParticle::setAcceleration(MyVector3 acceleration) {
 void MyParticle::setAcceleration(double x, double y, double z) {
     this->acceleration = MyVector3(x, y, z);
 }
+MyVector3 MyParticle::getTestAcceleration() { return this->testAcceleration; }

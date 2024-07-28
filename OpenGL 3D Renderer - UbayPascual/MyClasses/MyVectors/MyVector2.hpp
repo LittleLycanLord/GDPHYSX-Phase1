@@ -45,7 +45,7 @@ public:
     void operator*=(const double multiplicand);
     MyVector2 operator*(const MyVector2 multiplicand);
     void operator*=(const MyVector2 multiplicand);
-    double DotMultiplication(MyVector2 multiplicand);
+    double DotProduct(MyVector2 multiplicand);
 
     MyVector2 operator/(const double dividend);
     void operator/=(const double dividend);

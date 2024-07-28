@@ -18,6 +18,7 @@ protected:
     My3DModel* model;
     MyVector3 tint;
     MyParticle* anchorParticle;
+    MyVector3 anchorPoint;
     unsigned int segmentCount;
     double segmentLength;
     double totalLength;
@@ -33,6 +34,7 @@ public:
     MyAnchoredChain(My3DModel* model,
                     MyVector3 tint,
                     MyParticle* anchorParticle,
+                    MyVector3 anchorPoint,
                     double segmentLength,
                     double totalLength,
                     bool usesGravity);
@@ -41,6 +43,7 @@ public:
     MyAnchoredChain(My3DModel* model,
                     MyVector3 tint,
                     MyParticle* anchorParticle,
+                    MyVector3 anchorPoint,
                     unsigned int segmentCount,
                     double totalLength,
                     bool usesGravity);
@@ -51,6 +54,7 @@ public:
     void addParticle(MyParticle* particle);
     void addSegment(MyRod* rod);
     void setHeadSegment(MyRod* headRod);
+    float getActualLength();
 
 private:
     //* ╔═══════════════════╗
@@ -60,6 +64,7 @@ public:
     My3DModel* getModel();
     MyVector3 getTint();
     MyParticle* getAnchorParticle();
+    MyVector3 getAnchorPoint();
     unsigned int getSegmentCount();
     double getSegmentLength();
     double getTotalLength();

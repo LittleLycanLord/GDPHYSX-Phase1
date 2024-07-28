@@ -14,7 +14,7 @@ class MyContactResolver {
     //* ╚════════════╝
 private:
     unsigned int maxIterations;
-    unsigned int currentIterations;
+    unsigned int currentIteration;
 
     //* ╔═══════════════════════════════╗
     //* ║ Constructors & Deconstructors ║

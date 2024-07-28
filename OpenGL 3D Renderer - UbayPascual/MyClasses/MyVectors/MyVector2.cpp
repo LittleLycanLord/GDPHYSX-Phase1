@@ -50,7 +50,7 @@ void MyVector2::operator*=(const MyVector2 multiplicand) {
     this->x *= multiplicand.x;
     this->y *= multiplicand.y;
 }
-double MyVector2::DotMultiplication(MyVector2 multiplicand) {
+double MyVector2::DotProduct(MyVector2 multiplicand) {
     return (this->x * multiplicand.x) + (this->y * multiplicand.y);
 }
 MyVector2 MyVector2::operator/(const double dividend) {

@@ -9,6 +9,7 @@
 #include "../MyParticleConnections/MyAnchoredRope/MyAnchoredRope.hpp"
 #include "../MyParticleContact/MyParticleContact.hpp"
 #include "../MyParticleLink/MyParticleLink.hpp"
+#include "../MyParticleLink/MyRod/MyCable/MyCable.hpp"
 #include "../MyParticleLink/MyRod/MyRod.hpp"
 #include "../MyRenderLine/MyParticleLine/MyParticleLine.hpp"
 #include "../MySprings/MyAnchoredSpring/MyAnchoredSpring.hpp"
@@ -61,8 +62,10 @@ public:
                                         double springConstant,
                                         double restLength);
     MyRod* addRod(MyParticle* particleA, MyParticle* particleB, double restilengthtution);
+    MyCable* addCable(MyParticle* particleA, MyParticle* particleB, double restilengthtution);
     void addAnchoredRope(MyAnchoredRope* rope, bool showSegments);
     void addAnchoredChain(MyAnchoredChain* chain, bool showSegments);
+    void setGravity(double newGravity);
 
 protected:
     void generateContacts();

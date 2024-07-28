@@ -24,13 +24,14 @@ void MyPhysicsWorld::update(double time) {
     this->forceRegistry.updateForces(time);
     this->updateCount++;
 
+    this->generateContacts();
+    if (!this->contacts.empty()) {
+        contactResolver.resolveContacts(this->contacts, time);
+    }
+
     for (MyParticle* particle : this->particles) {
         particle->update(time, updateCount);
         this->updateGravity(particle);
-    }
-    this->generateContacts();
-    if (this->contacts.size() > 0) {
-        contactResolver.resolveContacts(this->contacts, time);
     }
 }
 void MyPhysicsWorld::addParticle(MyParticle* particleToAdd, bool usesGravity) {
@@ -87,10 +88,15 @@ MyRod* MyPhysicsWorld::addRod(MyParticle* particleA, MyParticle* particleB, doub
     if (SHOW_RENDER_LINES) this->addLine(particleA, particleB);
     return newRod;
 }
+MyCable* MyPhysicsWorld::addCable(MyParticle* particleA, MyParticle* particleB, double length) {
+    MyCable* newCable = new MyCable(particleA, particleB, length);
+    this->particleLinks.push_back(newCable);
+    if (SHOW_RENDER_LINES) this->addLine(particleA, particleB);
+    return newCable;
+}
 
 void MyPhysicsWorld::generateContacts() {
     this->contacts.clear();
-
     this->getOverlaps();
 
     for (MyParticleLink* link : this->particleLinks) {
@@ -113,22 +119,37 @@ void MyPhysicsWorld::updateGravity(MyParticle* particle) {
 void MyPhysicsWorld::getOverlaps() {
     for (int i = 0; i < this->particles.size() - 1; i++) {
         list<MyParticle*>::iterator particle = next(this->particles.begin(), i);
+
         for (int h = i + 1; h < this->particles.size(); h++) {
             list<MyParticle*>::iterator otherParticle = next(this->particles.begin(), h);
 
             if ((*particle)->getHasCollision() && (*otherParticle)->getHasCollision()) {
+                // MyVector3 squareMagnitudeVector =
+                //     (*particle)->getPosition() - (*otherParticle)->getPosition();
+                // double squareMagnitude = squareMagnitudeVector.getSquareMagnitude();
+                // double radius          = ((*particle)->getRadius() +
+                // (*otherParticle)->getRadius()); double squareRadius    = pow(radius, 2); if
+                // (squareMagnitude < squareRadius) {
+                //     if (PRINT_COLLISIONS) cout << "COLLISION at Frame #" << updateCount << endl;
+                //     this->addParticleContact(
+                //         (*particle),
+                //         (*otherParticle),
+                //         fmin((*particle)->getRestitution(), (*otherParticle)->getRestitution()),
+                //         sqrt(squareRadius - squareMagnitude),
+                //         squareMagnitudeVector.getNormalized());
+                // }
                 MyVector3 squareMagnitudeVector =
                     (*particle)->getPosition() - (*otherParticle)->getPosition();
-                double squareMagnitude = squareMagnitudeVector.getSquareMagnitude();
-                double squareRadius    = ((*particle)->getRadius() + (*otherParticle)->getRadius());
-                squareRadius           = squareRadius * squareRadius;
-                if (squareMagnitude <= squareRadius) {
-                    cout << "OVERLAP" << endl;
+                double distance = squareMagnitudeVector.getMagnitude();
+                double depth =
+                    ((*particle)->getRadius() + (*otherParticle)->getRadius()) - distance;
+                if (distance < (*particle)->getRadius() + (*otherParticle)->getRadius()) {
+                    if (PRINT_COLLISIONS) cout << "COLLISION at Frame #" << updateCount << endl;
                     this->addParticleContact(
                         (*particle),
                         (*otherParticle),
                         fmin((*particle)->getRestitution(), (*otherParticle)->getRestitution()),
-                        sqrt(squareRadius - squareMagnitude),
+                        depth,
                         squareMagnitudeVector.getNormalized());
                 }
             }
@@ -173,8 +194,12 @@ void MyPhysicsWorld::addAnchoredChain(MyAnchoredChain* chain, bool showSegments)
         cout << "Chain length has to be a positive integer." << endl;
         return;
     }
+    chain->getAnchorParticle()->setOriginalPosition(chain->getAnchorPoint(), true);
     if (!chain->getAnchorParticle()->getPersistent())
         chain->getAnchorParticle()->setPersistent(true);
+    if (chain->getAnchorParticle()->getHasCollision())
+        chain->getAnchorParticle()->setHasCollision(false);
+    chain->getAnchorParticle()->setRadius(0.3f);
     this->addParticle(chain->getAnchorParticle(), false);
 
     for (int i = 1; i < chain->getSegmentCount() + 1; i++) {
@@ -184,11 +209,13 @@ void MyPhysicsWorld::addAnchoredChain(MyAnchoredChain* chain, bool showSegments)
         } else
             newParticle = new MyParticle();
 
-        newParticle->setRadius(0.3f);
+        newParticle->setRadius(0.2f);
         newParticle->setPosition(
             MyVector3(chain->getParticles()[i - 1]->getPosition().x,
                       chain->getParticles()[i - 1]->getPosition().y - chain->getSegmentLength(),
                       chain->getParticles()[i - 1]->getPosition().z));
+        MyVector3(newParticle->getPosition()).DisplayValuesIndividually("New Position: ", 2);
+        cout << "Chain Segment Length: " << chain->getSegmentLength() << endl;
         this->addParticle(newParticle, chain->getUsesGravity());
 
         newParticle->setHasCollision(false);
@@ -199,6 +226,9 @@ void MyPhysicsWorld::addAnchoredChain(MyAnchoredChain* chain, bool showSegments)
         chain->addSegment(
             this->addRod(newParticle, chain->getParticles()[i - 1], segmentLength.getMagnitude()));
     }
+}
+void MyPhysicsWorld::setGravity(double newGravity) {
+    this->gravityGenerator.setGravity(MyVector3(0.0f, newGravity, 0.0f));
 }
 
 void MyPhysicsWorld::addLine(MyParticle* particleA, MyParticle* particleB) {

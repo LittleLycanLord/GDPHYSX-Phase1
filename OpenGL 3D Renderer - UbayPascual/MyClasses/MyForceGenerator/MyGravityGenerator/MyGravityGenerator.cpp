@@ -18,3 +18,5 @@ void MyGravityGenerator::updateForce(MyParticle* affectedParticle, double time) 
 //* ╔═══════════════════╗
 //* ║ Getters & Setters ║
 //* ╚═══════════════════╝
+MyVector3 MyGravityGenerator::getGravity() { return this->gravity; }
+void MyGravityGenerator::setGravity(MyVector3 gravity) { this->gravity = gravity; }
