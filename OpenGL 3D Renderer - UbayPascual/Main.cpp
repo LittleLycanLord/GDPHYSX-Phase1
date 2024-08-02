@@ -41,28 +41,33 @@ using namespace MyPhysics;
 
 //* - - - - - POINTERS AND CONTAINERS - - - - -
 vector<MyDirectionalLight*> directionalLights = {};
-vector<MyPointLight*> pointLights             = {};
-vector<MySpotLight*> spotLights               = {};
-vector<MyLight*> lights                       = {};
+vector<MyPointLight*> pointLights = {};
+vector<MySpotLight*> spotLights = {};
+vector<MyLight*> lights = {};
 
-list<My3DModel*> renderingList                     ={};
+list<My3DModel*> renderingList = {};
 
-vector<MyCamera*> cameras                     = {};
-MyCamera* activeCamera                        = NULL;
+vector<MyCamera*> cameras = {};
+MyCamera* activeCamera = NULL;
 
-Player* player                              = NULL;
+Player* player = NULL;
 //* - - - - - END OF POINTERS AND CONTAINERS - - - - -
 
 //* - - - - - PHYSICS - - - - -
-using physicsClock                          = high_resolution_clock;
-using timerClock                            = steady_clock;
+using physicsClock = high_resolution_clock;
+using timerClock = steady_clock;
 bool pausePhysics = true;
 bool physicsStep = false;
-auto timerClockStart                        = timerClock::now();
-auto timerClockMark                         = timerClock::now();
+auto timerClockStart = timerClock::now();
+auto timerClockMark = timerClock::now();
 nanoseconds currentNanosecond(0);
 MyPhysicsWorld physicsWorld = MyPhysicsWorld(&renderingList);
 //* - - - - - END OF PHYSICS - - - - -
+
+//* PC02 variables
+vector<MyCable*> cables;
+vector<MyParticle*> seats;
+double spinForce = 100000;
 
 void updateModelsList() {
     renderingList.remove_if([](My3DModel* model) { return model->getIsDestroyed(); });
@@ -80,43 +85,80 @@ void Key_Callback(
     activeCamera->OtherInputs(key, action, mods);
     switch (key) {
         //* Toggle Physics
-        case GLFW_KEY_SPACE:
-            if (action == GLFW_PRESS) {
-               pausePhysics = !pausePhysics;
-            }
-            break;
+    case GLFW_KEY_SPACE:
+        if (action == GLFW_PRESS) {
+            pausePhysics = !pausePhysics;
+        }
+        break;
         //* Swap Camera to Orthographic
-        case GLFW_KEY_1:
-            if (action == GLFW_PRESS) {
-                activeCamera = cameras[1];
-                system("cls");
-               cout << "Current Camera Switched to: " + activeCamera->getName() << endl;
-            }
-            break;
+    case GLFW_KEY_1:
+        if (action == GLFW_PRESS) {
+            activeCamera = cameras[1];
+            system("cls");
+            cout << "Current Camera Switched to: " + activeCamera->getName() << endl;
+        }
+        break;
         //* Swap Camera to Perspective
-        case GLFW_KEY_2:
-            if (action == GLFW_PRESS) {
-                activeCamera = cameras[0];
-                system("cls");
-               cout << "Current Camera Switched to: " + activeCamera->getName() << endl;
-            }
-            break;
+    case GLFW_KEY_2:
+        if (action == GLFW_PRESS) {
+            activeCamera = cameras[0];
+            system("cls");
+            cout << "Current Camera Switched to: " + activeCamera->getName() << endl;
+        }
+        break;
         //* Physics Step
-        case GLFW_KEY_P:
-            if (action == GLFW_PRESS) {
-                if(pausePhysics)
-                    physicsStep = true;
-            }
-            break;
+    case GLFW_KEY_P:
+        if (action == GLFW_PRESS) {
+            if (pausePhysics)
+                physicsStep = true;
+        }
+        break;
+
+        //* PC02 Controls
+    case GLFW_KEY_UP:
+        if (action == GLFW_PRESS) {
+            for (MyCable* cable : cables)
+                cable->length += 1.0f;
+            system("cls");
+            cout << "Cables Lengthed: " << cables[0]->length << endl;
+        }
+        break;
+    case GLFW_KEY_DOWN:
+        if (action == GLFW_PRESS) {
+            for (MyCable* cable : cables)
+                cable->length -= 1.0f;
+            system("cls");
+            cout << "Cables Shortened: " << cables[0]->length << endl;
+        }
+        break;
+    case GLFW_KEY_RIGHT:
+        if (action == GLFW_PRESS) {
+            spinForce += 10000.0f;
+            system("cls");
+            cout << "Spin Increased: " << spinForce << endl;
+        }
+        break;
+    case GLFW_KEY_LEFT:
+        if (action == GLFW_PRESS) {
+            spinForce -= 10000.0f;
+            system("cls");
+            cout << "Spin Decreased: " << spinForce << endl;
+        }
+    case GLFW_KEY_ENTER:
+        if (action == GLFW_PRESS) {
+            spinForce = 0.0f;
+            system("cls");
+            cout << "EMERGENCY BRAKES" << endl;
+        }
     }
 }
 
 void createNewtonsCradle(My3DModel* particleModel,
-                         double cableLength,
-                         double particleGap,
-                         double particleRadius,
-                         double gravityStrength,
-                         MyVector3 appliedForce) {
+    double cableLength,
+    double particleGap,
+    double particleRadius,
+    double gravityStrength,
+    MyVector3 appliedForce) {
     physicsWorld.setGravity(gravityStrength);
 
     //? Cable Pendulum
@@ -161,12 +203,11 @@ void createNewtonsCradle(My3DModel* particleModel,
 void makeCarousel(My3DModel* particleModel, MyParticle* topParticle) {
     //? Create the Anchors and Seats
     double fortyFiveDegree((sqrt(2) / 2) *
-                           40.0f);  //* evenly spaced out on a circle with a diameter of 80m.
+        40.0f);  //* evenly spaced out on a circle with a diameter of 80m.
 
     MyRenderParticle* contactParticle =
         new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f));
 
-    vector<MyRenderParticle*> seats;
     for (int i = 0; i < 8; i++) {
         MyRenderParticle* anchorParticle =
             new MyRenderParticle(particleModel, MyVector3(0.5f, 0.5f, 0.5f));
@@ -180,42 +221,42 @@ void makeCarousel(My3DModel* particleModel, MyParticle* topParticle) {
 
         //? Following the Unit Circle
         switch (i) {
-            case 0:
-                anchorParticle->setOriginalPosition(MyVector3(40.0f, 40.0f, 0.0f), true);
-                seatParticle->setPosition(MyVector3(40.0f, 25.0f, 0.0f));
-                break;
-            case 1:
-                anchorParticle->setOriginalPosition(
-                    MyVector3(fortyFiveDegree, 40.0f, fortyFiveDegree), true);
-                seatParticle->setPosition(MyVector3(fortyFiveDegree, 25.0f, fortyFiveDegree));
-                break;
-            case 2:
-                anchorParticle->setOriginalPosition(MyVector3(0.0f, 40.0f, 40.0f), true);
-                seatParticle->setPosition(MyVector3(0.0f, 25.0f, 40.0f));
-                break;
-            case 3:
-                anchorParticle->setOriginalPosition(
-                    MyVector3(-fortyFiveDegree, 40.0f, fortyFiveDegree), true);
-                seatParticle->setPosition(MyVector3(-fortyFiveDegree, 25.0f, fortyFiveDegree));
-                break;
-            case 4:
-                anchorParticle->setOriginalPosition(MyVector3(-40.0f, 40.0f, 0.0f), true);
-                seatParticle->setPosition(MyVector3(-40.0f, 25.0f, 0.0f));
-                break;
-            case 5:
-                anchorParticle->setOriginalPosition(
-                    MyVector3(-fortyFiveDegree, 40.0f, -fortyFiveDegree), true);
-                seatParticle->setPosition(MyVector3(-fortyFiveDegree, 25.0f, -fortyFiveDegree));
-                break;
-            case 6:
-                anchorParticle->setOriginalPosition(MyVector3(0.0f, 40.0f, -40.0f), true);
-                seatParticle->setPosition(MyVector3(0.0f, 25.0f, -40.0f));
-                break;
-            case 7:
-                anchorParticle->setOriginalPosition(
-                    MyVector3(fortyFiveDegree, 40.0f, -fortyFiveDegree), true);
-                seatParticle->setPosition(MyVector3(fortyFiveDegree, 25.0f, -fortyFiveDegree));
-                break;
+        case 0:
+            anchorParticle->setOriginalPosition(MyVector3(40.0f, 40.0f, 0.0f), true);
+            seatParticle->setPosition(MyVector3(40.0f, 25.0f, 0.0f));
+            break;
+        case 1:
+            anchorParticle->setOriginalPosition(
+                MyVector3(fortyFiveDegree, 40.0f, fortyFiveDegree), true);
+            seatParticle->setPosition(MyVector3(fortyFiveDegree, 25.0f, fortyFiveDegree));
+            break;
+        case 2:
+            anchorParticle->setOriginalPosition(MyVector3(0.0f, 40.0f, 40.0f), true);
+            seatParticle->setPosition(MyVector3(0.0f, 25.0f, 40.0f));
+            break;
+        case 3:
+            anchorParticle->setOriginalPosition(
+                MyVector3(-fortyFiveDegree, 40.0f, fortyFiveDegree), true);
+            seatParticle->setPosition(MyVector3(-fortyFiveDegree, 25.0f, fortyFiveDegree));
+            break;
+        case 4:
+            anchorParticle->setOriginalPosition(MyVector3(-40.0f, 40.0f, 0.0f), true);
+            seatParticle->setPosition(MyVector3(-40.0f, 25.0f, 0.0f));
+            break;
+        case 5:
+            anchorParticle->setOriginalPosition(
+                MyVector3(-fortyFiveDegree, 40.0f, -fortyFiveDegree), true);
+            seatParticle->setPosition(MyVector3(-fortyFiveDegree, 25.0f, -fortyFiveDegree));
+            break;
+        case 6:
+            anchorParticle->setOriginalPosition(MyVector3(0.0f, 40.0f, -40.0f), true);
+            seatParticle->setPosition(MyVector3(0.0f, 25.0f, -40.0f));
+            break;
+        case 7:
+            anchorParticle->setOriginalPosition(
+                MyVector3(fortyFiveDegree, 40.0f, -fortyFiveDegree), true);
+            seatParticle->setPosition(MyVector3(fortyFiveDegree, 25.0f, -fortyFiveDegree));
+            break;
         }
         anchorParticle->setRadius(1.0f);
         anchorParticle->setLockY(true);
@@ -224,7 +265,7 @@ void makeCarousel(My3DModel* particleModel, MyParticle* topParticle) {
         seatParticle->setMass(60.0f);   //* "and around 60kg"
         MyVector3 anchorRod = topParticle->getPosition() - anchorParticle->getPosition();
         physicsWorld.addRod(topParticle, anchorParticle, anchorRod.getMagnitude());
-        physicsWorld.addCable(anchorParticle, seatParticle, 15.0f);
+        cables.push_back(physicsWorld.addCable(anchorParticle, seatParticle, 15.0f));
     }
 }
 
@@ -293,30 +334,30 @@ int main(void) {
 
     //* Define our skybox's vertices
     float skyboxVertices[]{
-       // clang-format off
-       -1.0f, -1.0f,  1.0f, //? 0 - Near Bottom Left Corner
-        1.0f, -1.0f,  1.0f, //? 1 - Near Bottom Right Corner
-        1.0f, -1.0f, -1.0f, //? 2 - Far Bottom Right Corner
-       -1.0f, -1.0f, -1.0f, //? 3 - Far Bottom Left Corner
-       -1.0f,  1.0f,  1.0f, //? 4 - Near Top Left Corner
-        1.0f,  1.0f,  1.0f, //? 5 - Near Top Right Corner
-        1.0f,  1.0f, -1.0f, //? 6 - Far Top Right Corner
-       -1.0f,  1.0f, -1.0f  //? 7 - Far Top Left Corner
-       // clang-format on
+        // clang-format off
+        -1.0f, -1.0f,  1.0f, //? 0 - Near Bottom Left Corner
+         1.0f, -1.0f,  1.0f, //? 1 - Near Bottom Right Corner
+         1.0f, -1.0f, -1.0f, //? 2 - Far Bottom Right Corner
+        -1.0f, -1.0f, -1.0f, //? 3 - Far Bottom Left Corner
+        -1.0f,  1.0f,  1.0f, //? 4 - Near Top Left Corner
+         1.0f,  1.0f,  1.0f, //? 5 - Near Top Right Corner
+         1.0f,  1.0f, -1.0f, //? 6 - Far Top Right Corner
+        -1.0f,  1.0f, -1.0f  //? 7 - Far Top Left Corner
+        // clang-format on
     };
 
     //* Define our skybox's fragments
     //* Note: Each face consist of two triangles, thus each face is made up of a pair of vertex
     // triplets (cuz triangles have three corners, duh)
     unsigned int skyboxFragments[]{
-       // clang-format off
-        1, 2, 6, 6, 5, 1, //? Right Face
-        0, 4, 7, 7, 3, 0, //? Left Face
-        4, 5, 6, 6, 7, 4, //? Top Face
-        0, 3, 2, 2, 1, 0, //? Bottom Face
-        0, 1, 5, 5, 4, 0, //? Near Face
-        3, 7, 6, 6, 2, 3  //? Far Face
-       // clang-format on
+        // clang-format off
+         1, 2, 6, 6, 5, 1, //? Right Face
+         0, 4, 7, 7, 3, 0, //? Left Face
+         4, 5, 6, 6, 7, 4, //? Top Face
+         0, 3, 2, 2, 1, 0, //? Bottom Face
+         0, 1, 5, 5, 4, 0, //? Near Face
+         3, 7, 6, 6, 2, 3  //? Far Face
+         // clang-format on
     };
 
     unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
@@ -336,12 +377,12 @@ int main(void) {
     //* - - - - - END OF SKYBOX CREATION - - - - -
 
     //* - - - - - SKYBOX TEXTURING - - - - -
-    string skyboxTexturePaths[]{SKYBOX_RIGHT_TEXTURE_PATH,
+    string skyboxTexturePaths[]{ SKYBOX_RIGHT_TEXTURE_PATH,
                                 SKYBOX_LEFT_TEXTURE_PATH,
                                 SKYBOX_TOP_TEXTURE_PATH,
                                 SKYBOX_BOTTOM_TEXTURE_PATH,
                                 SKYBOX_FRONT_TEXTURE_PATH,
-                                SKYBOX_BACK_TEXTURE_PATH};
+                                SKYBOX_BACK_TEXTURE_PATH };
 
     unsigned int skyboxTexture;
     glGenTextures(1, &skyboxTexture);
@@ -360,14 +401,14 @@ int main(void) {
 
         if (data) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                         0,
-                         GL_RGBA,
-                         w,
-                         h,
-                         0,
-                         GL_RGBA,
-                         GL_UNSIGNED_BYTE,
-                         data);
+                0,
+                GL_RGBA,
+                w,
+                h,
+                0,
+                GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                data);
 
             stbi_image_free(data);
         }
@@ -377,11 +418,20 @@ int main(void) {
     //* - - - - - END OF SKYBOX TEXTURING - - - - -
 
     //* - - - - - CAMERAS - - - - -
-    cameras = {new MyPerspectiveCamera("Perspective Camera",
-                                       glm::vec3(0.0f, 0.0f, WINDOW_WIDTH),
-                                       glm::vec3(0.0f, 0.0f, 0.0f),
-                                       60.0f,
-                                       1000.0f)};
+    cameras = {// new MyPerspectiveCamera("Perspective Camera",
+        //                                glm::vec3(0.0f, 0.0f, WINDOW_WIDTH),
+        //                                glm::vec3(0.0f, 0.0f, 0.0f),
+        //                                60.0f,
+        //                                1000.0f)
+        new MyOrthographicCamera("Orthographic Camera",
+                                 glm::vec3(0.0f, 0.0f, ZOOM_IN_CENTER_SIZE / 2),
+                                 glm::vec3(0.0f, 0.0f, 0.0f),
+                                 -ZOOM_IN_CENTER_SIZE / 2,
+                                 ZOOM_IN_CENTER_SIZE / 2,
+                                 -ZOOM_IN_CENTER_SIZE / 2,
+                                 ZOOM_IN_CENTER_SIZE / 2,
+                                 0.001f,
+                                 1000.0f) };
     if (ONE_PIXEL_PER_METER) {
         if (POSITIVE_Y_ONLY) {
             cameras.push_back(new MyOrthographicCamera(
@@ -394,47 +444,55 @@ int main(void) {
                 WINDOW_WIDTH / 2,
                 0.001f,
                 1000.0f));
-        } else {
+        }
+        else {
             if (ZOOM_IN_CENTER) {
+                // cameras.push_back(
+                //     new MyOrthographicCamera("Orthographic Camera",
+                //                              glm::vec3(0.0f, 0.0f, ZOOM_IN_CENTER_SIZE / 2),
+                //                              glm::vec3(0.0f, 0.0f, 0.0f),
+                //                              -ZOOM_IN_CENTER_SIZE / 2,
+                //                              ZOOM_IN_CENTER_SIZE / 2,
+                //                              -ZOOM_IN_CENTER_SIZE / 2,
+                //                              ZOOM_IN_CENTER_SIZE / 2,
+                //                              0.001f,
+                //                              1000.0f));
                 cameras.push_back(
-                    new MyOrthographicCamera("Orthographic Camera",
-                                             glm::vec3(0.0f, 0.0f, ZOOM_IN_CENTER_SIZE / 2),
-                                             glm::vec3(0.0f, 0.0f, 0.0f),
-                                             -ZOOM_IN_CENTER_SIZE / 2,
-                                             ZOOM_IN_CENTER_SIZE / 2,
-                                             -ZOOM_IN_CENTER_SIZE / 2,
-                                             ZOOM_IN_CENTER_SIZE / 2,
-                                             0.001f,
-                                             1000.0f));
-            } else {
+                    new MyPerspectiveCamera("Perspective Camera",
+                        glm::vec3(0.0f, 0.0f, ZOOM_IN_CENTER_SIZE),
+                        glm::vec3(0.0f, 0.0f, 0.0f),
+                        60.0f,
+                        1000.0f));
+            }
+            else {
                 cameras.push_back(new MyOrthographicCamera("Orthographic Camera",
-                                                           glm::vec3(0.0f, 0.0f, WINDOW_WIDTH / 2),
-                                                           glm::vec3(0.0f, 0.0f, 0.0f),
-                                                           -WINDOW_WIDTH / 2,
-                                                           WINDOW_WIDTH / 2,
-                                                           -WINDOW_WIDTH / 2,
-                                                           WINDOW_WIDTH / 2,
-                                                           0.001f,
-                                                           1000.0f));
+                    glm::vec3(0.0f, 0.0f, WINDOW_WIDTH / 2),
+                    glm::vec3(0.0f, 0.0f, 0.0f),
+                    -WINDOW_WIDTH / 2,
+                    WINDOW_WIDTH / 2,
+                    -WINDOW_WIDTH / 2,
+                    WINDOW_WIDTH / 2,
+                    0.001f,
+                    1000.0f));
             }
         }
     }
 
-    activeCamera      = cameras.back();
+    activeCamera = cameras.back();
     //* - - - - - END OF CAMERAS - - - - -
 
     //* - - - - - WORLD FACTS - - - - -
     glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 Center  = glm::vec3(0.0f);
+    glm::vec3 Center = glm::vec3(0.0f);
     glm::vec3 ForwardVector =
         glm::vec3(activeCamera->getViewCenter() - activeCamera->getPosition());
-    ForwardVector         = glm::normalize(ForwardVector);
+    ForwardVector = glm::normalize(ForwardVector);
     glm::vec3 RightVector = glm::normalize(glm::cross(ForwardVector, WorldUp));
-    glm::vec3 UpVector    = glm::normalize(glm::cross(RightVector, ForwardVector));
+    glm::vec3 UpVector = glm::normalize(glm::cross(RightVector, ForwardVector));
     //* - - - - - END OF WORLD FACTS - - - - -
 
     //* - - - - - LIGHTS - - - - -
-    directionalLights     = {
+    directionalLights = {
        new MyDirectionalLight("Top White Directional Light",
                               true,
                               glm::vec3(0.0f, -1.0f, 0.0f),  //? Direction
@@ -458,30 +516,30 @@ int main(void) {
         lights.push_back(directionalLight);
 
     pointLights = {
-       //    new MyPointLight("White Point Light",
-       //                   true,
-       //                   glm::vec3(0.0f, 0.8f, 0.2f),  //? Position
-       //                   glm::vec3(1.0f, 1.0f, 1.0f),  //? Color
-       //                   0.1f,                         //? Ambient Strength
-       //                   glm::vec3(1.0f, 1.0f, 1.0f),  //? Ambient Color
-       //                   0.5f,                         //? Specular Strength
-       //                   16,                           //? Specular Phong
-       //                   1.2f),                        //? Brightness
+        //    new MyPointLight("White Point Light",
+        //                   true,
+        //                   glm::vec3(0.0f, 0.8f, 0.2f),  //? Position
+        //                   glm::vec3(1.0f, 1.0f, 1.0f),  //? Color
+        //                   0.1f,                         //? Ambient Strength
+        //                   glm::vec3(1.0f, 1.0f, 1.0f),  //? Ambient Color
+        //                   0.5f,                         //? Specular Strength
+        //                   16,                           //? Specular Phong
+        //                   1.2f),                        //? Brightness
     };
     for (MyPointLight* pointLight : pointLights) lights.push_back(pointLight);
 
     spotLights = {
-       //    new SpotLight("White Spotlight",
-       //                  false,
-       //                  glm::vec3(0.0f, 1.0f, 0.0f),   //? Position
-       //                  glm::vec3(0.0f, -1.0f, 0.0f),  //? Direction
-       //                  12.5f,                         //? Cone Size
-       //                  glm::vec3(1.0f, 1.0f, 1.0f),   //? Color
-       //                  0.1f,                          //? Ambient Strength
-       //                  glm::vec3(1.0f, 1.0f, 1.0f),   //? Ambient Color
-       //                  0.5f,                          //? Specular Strength
-       //                  16,                            //? Specular Phong
-       //                  1.0f),                         //? Brightness
+        //    new SpotLight("White Spotlight",
+        //                  false,
+        //                  glm::vec3(0.0f, 1.0f, 0.0f),   //? Position
+        //                  glm::vec3(0.0f, -1.0f, 0.0f),  //? Direction
+        //                  12.5f,                         //? Cone Size
+        //                  glm::vec3(1.0f, 1.0f, 1.0f),   //? Color
+        //                  0.1f,                          //? Ambient Strength
+        //                  glm::vec3(1.0f, 1.0f, 1.0f),   //? Ambient Color
+        //                  0.5f,                          //? Specular Strength
+        //                  16,                            //? Specular Phong
+        //                  1.0f),                         //? Brightness
     };
     for (MySpotLight* spotLight : spotLights) lights.push_back(spotLight);
 
@@ -496,23 +554,23 @@ int main(void) {
 
     //* - - - - - PARTICLE SETUP - - - - -
     My3DModel* particleModel = new My3DModel("DEFAULT PARTICLE",
-                                             DEFAULT_PARTICLE_MODEL_PATH,
-                                             DEFAULT_PARTICLE_TEXTURE_PATH,
-                                             "",
-                                             glm::vec3(1.0f),
-                                             glm::vec3(0.0f, 0.0f, 0.0f),
-                                             glm::mat4(1.0f),
-                                             glm::vec3(DEFAULT_PARTICLE_SIZE),
-                                             glm::vec3(0.0f));
+        DEFAULT_PARTICLE_MODEL_PATH,
+        DEFAULT_PARTICLE_TEXTURE_PATH,
+        "",
+        glm::vec3(1.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::mat4(1.0f),
+        glm::vec3(DEFAULT_PARTICLE_SIZE),
+        glm::vec3(0.0f));
     particleModel->loadModel();
 
     int originParticles = 0;
     if (ORIGIN_MARKER) {
         physicsWorld.addParticles(
-            {new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
+            { new MyRenderParticle(particleModel, MyVector3(1.0f, 0.0f, 0.0f)),
              new MyRenderParticle(particleModel, MyVector3(0.0f, 1.0f, 0.0f)),
              new MyRenderParticle(particleModel, MyVector3(0.0f, 0.0f, 1.0f)),
-             new MyRenderParticle(particleModel, MyVector3(1.0f, 1.0f, 1.0f))},
+             new MyRenderParticle(particleModel, MyVector3(1.0f, 1.0f, 1.0f)) },
             false);
         physicsWorld.getParticleListAsVector()[0]->setPosition(MyVector3(10.0f, 0.0f, 0.0f));
         physicsWorld.getParticleListAsVector()[0]->setHasCollision(false);
@@ -1076,11 +1134,11 @@ int main(void) {
     //* - - - - - END OF PRE-RUNTIME - - - - -
 
     //* - - - - - PHYSICS WORLD INITIALIZATION - - - - -
-    timerClockStart   = timerClock::now();
+    timerClockStart = timerClock::now();
     //* - - - - - END OF PHYSICS WORLD INITIALIZATION - - - - -
 
     //* - - - - - RUNTIME - - - - -
-    auto currentTime  = physicsClock::now();
+    auto currentTime = physicsClock::now();
     auto previousTime = currentTime;
 
     while (!glfwWindowShouldClose(window)) {
@@ -1089,9 +1147,9 @@ int main(void) {
             glm::lookAt(activeCamera->getPosition(), activeCamera->getViewCenter(), WorldUp));
 
         //* - - - - - FIXED UPDATE - - - - -
-        currentTime   = physicsClock::now();
+        currentTime = physicsClock::now();
         auto duration = duration_cast<nanoseconds>(currentTime - previousTime);
-        previousTime  = currentTime;
+        previousTime = currentTime;
 
         if (!pausePhysics) {
             currentNanosecond += duration;
@@ -1105,8 +1163,8 @@ int main(void) {
                 //* - - - - - DEBUGGING - - - - -
                 if (!carouselMade) {
                     topParticle->setPosition(topParticle->getPosition() +
-                                             MyVector3(0.0f, 1.0f, 0.0f));
-                    rodABLength  = topParticle->getPosition() - bottomParticle->getPosition();
+                        MyVector3(0.0f, 1.0f, 0.0f));
+                    rodABLength = topParticle->getPosition() - bottomParticle->getPosition();
                     pole->length = rodABLength.getMagnitude();
                 }
                 if (!carouselMade && topParticle->getPosition().y == 40.0f) {
@@ -1121,7 +1179,8 @@ int main(void) {
                 physicsWorld.update((double)millisecond.count() / 1000);
                 currentNanosecond -= currentNanosecond;
             }
-        } else {
+        }
+        else {
             if (physicsStep) {
                 physicsWorld.update(0.1f);
                 physicsStep = false;
@@ -1140,8 +1199,8 @@ int main(void) {
         //* - - - - - END OF SKYBOX SHADER SWITCH - - - - -
 
         //* - - - - - SKYBOX RENDERING - - - - -
-        glm::mat4 skyboxView           = glm::mat4(1.0f);
-        skyboxView                     = glm::mat4(glm::mat3(activeCamera->getView()));
+        glm::mat4 skyboxView = glm::mat4(1.0f);
+        skyboxView = glm::mat4(glm::mat3(activeCamera->getView()));
 
         unsigned int skyboxViewAddress = glGetUniformLocation(skyboxShaderProgram, "view");
         glUniformMatrix4fv(skyboxViewAddress, 1, GL_FALSE, glm::value_ptr(skyboxView));
