@@ -38,6 +38,15 @@ void MyParticle::updatePosition(double time) {
     MyVector3 initialPosition(this->position);
     this->position =
         this->position + (this->velocity * time) + ((this->acceleration * time * time) / 2.0f);
+    MyVector3 angularVelocity  = this->angularVelocity * time;
+    double angularMagnitude    = angularVelocity.getMagnitude();
+    MyVector3 angularDirection = angularVelocity.getNormalized();
+
+    if (angularMagnitude != 0) {
+        quat rotateBy  = rotate(mat4(1.0f), (float)angularMagnitude, (vec3)angularDirection);
+        this->rotation = toMat4(toQuat(this->rotation) * rotateBy);
+    }
+
     MyVector3 finalPosition(this->position);
     this->magnitudeVelocity = sqrt(pow((finalPosition.x - initialPosition.x), 2) +
                                    pow((finalPosition.y - initialPosition.y), 2) +
@@ -46,16 +55,21 @@ void MyParticle::updatePosition(double time) {
 }
 void MyParticle::updateVelocity(double time) {
     this->acceleration += this->accumulatedForce * (1 / this->mass);
-    this->velocity = this->velocity + (this->acceleration * time);
-    this->velocity = this->velocity * pow(damping, time);
+    this->velocity         = this->velocity + (this->acceleration * time);
+    this->velocity         = this->velocity * pow(damping, time);
+
+    double momentOfInertia = this->momentOfInertia();
+    this->angularVelocity += this->accumulatedTorque * time * (1.0f / momentOfInertia);
+    this->angularVelocity = this->angularVelocity * pow(angularDamping, time);
 }
 void MyParticle::updateAverageVelocity(int physicsUpdateCount) {
     this->totalVelocity += this->velocity;
     this->averageVelocity = this->totalVelocity / physicsUpdateCount;
 }
+double MyParticle::momentOfInertia() { return (2.0f / 5.0f) * mass * pow(this->radius, 2); }
 
 void MyParticle::update(double time, int physicsUpdateCount) {
-    if (persistent) {
+    if (isPersistent) {
         if (this->position.x != this->originalPosition.x ||
             this->position.y != this->originalPosition.y ||
             this->position.z != this->originalPosition.z)
@@ -66,6 +80,13 @@ void MyParticle::update(double time, int physicsUpdateCount) {
         return;
     }
     this->updatePosition(time);
+    if (this->lockX && this->position.x != this->originalPosition.x)
+        this->position.x = this->originalPosition.x;
+    if (this->lockY && this->position.y != this->originalPosition.y)
+        this->position.y = this->originalPosition.y;
+    if (this->lockZ && this->position.z != this->originalPosition.z)
+        this->position.z = this->originalPosition.z;
+
     this->updateModel();
     this->updateVelocity(time);
     //* - - - - - ADDITIONAL UPDATES - - - - -
@@ -91,10 +112,15 @@ void MyParticle::moveTowards(MyVector3 target, double magnitudeVelocity) {
                  pow((target.z - this->position.z), 2)));
 }
 void MyParticle::addForce(MyVector3 force) { this->accumulatedForce += force; }
+void MyParticle::addForceAtPoint(MyVector3 force, MyVector3 point) {
+    this->accumulatedForce += force;
+    this->accumulatedTorque = point.CrossMultiplication(force);
+}
 void MyParticle::resetForce() {
-    this->accumulatedForce = MyVector3(0.0f, 0.0f, 0.0f);
-    this->testAcceleration = this->acceleration;
-    this->acceleration     = MyVector3(0.0f, 0.0f, 0.0f);
+    this->accumulatedForce  = MyVector3(0.0f, 0.0f, 0.0f);
+    this->testAcceleration  = this->acceleration;
+    this->acceleration      = MyVector3(0.0f, 0.0f, 0.0f);
+    this->accumulatedTorque = MyVector3(0.0f, 0.0f, 0.0f);
 }
 void MyParticle::extendLifetime(double amount) { this->lifetime += amount; }
 void MyParticle::stop() {
@@ -125,8 +151,14 @@ bool MyParticle::getUsesGravity() { return this->usesGravity; }
 void MyParticle::setUsesGravity(bool usesGravity) { this->usesGravity = usesGravity; }
 bool MyParticle::getHasCollision() { return this->hasCollision; }
 void MyParticle::setHasCollision(bool hasCollision) { this->hasCollision = hasCollision; }
-bool MyParticle::getPersistent() { return this->persistent; }
-void MyParticle::setPersistent(bool Persistent) { this->persistent = Persistent; }
+bool MyParticle::getIsPersistent() { return this->isPersistent; }
+void MyParticle::setIsPersistent(bool isPersistent) { this->isPersistent = isPersistent; }
+bool MyParticle::getLockX() { return this->lockX; }
+void MyParticle::setLockX(bool lockX) { this->lockX = lockX; }
+bool MyParticle::getLockY() { return this->lockY; }
+void MyParticle::setLockY(bool lockY) { this->lockY = lockY; }
+bool MyParticle::getLockZ() { return this->lockZ; }
+void MyParticle::setLockZ(bool lockZ) { this->lockZ = lockZ; }
 MyVector3 MyParticle::getPosition() { return this->position; }
 void MyParticle::setPosition(MyVector3 position) { this->position = position; }
 MyVector3 MyParticle::getOriginalPosition() { return this->originalPosition; }
@@ -148,3 +180,14 @@ void MyParticle::setAcceleration(double x, double y, double z) {
     this->acceleration = MyVector3(x, y, z);
 }
 MyVector3 MyParticle::getTestAcceleration() { return this->testAcceleration; }
+
+mat4 MyParticle::getRotation() { return this->rotation; }
+void MyParticle::setRotation(mat4 rotation) { this->rotation = rotation; }
+MyVector3 MyParticle::getAccumulatedTorque() { return this->accumulatedTorque; }
+void MyParticle::setAccumulatedTorque(MyVector3 accumulatedTorque) {
+    this->accumulatedTorque = accumulatedTorque;
+}
+MyVector3 MyParticle::getAngularVelocity() { return this->angularVelocity; }
+void MyParticle::setAngularVelocity(MyVector3 angularVelocity) {
+    this->angularVelocity = angularVelocity;
+}

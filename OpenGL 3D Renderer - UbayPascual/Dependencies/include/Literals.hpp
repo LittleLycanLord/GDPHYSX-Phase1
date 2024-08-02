@@ -4,7 +4,7 @@
 
 //* - - - - - PHYSICS - - - - -
 const std::string DEFAULT_PARTICLE_MODEL_PATH   = "Assets/Models/sphere.obj";
-const std::string DEFAULT_PARTICLE_TEXTURE_PATH = "Assets/Black.png";
+const std::string DEFAULT_PARTICLE_TEXTURE_PATH = "Assets/ParticleTexture.png";
 //* - - - - - END OF PHYSICS - - - - -
 
 //* - - - - - ROTATION AXES - - - - -

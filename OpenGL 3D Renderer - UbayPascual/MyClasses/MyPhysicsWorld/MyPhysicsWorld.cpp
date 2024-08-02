@@ -165,7 +165,7 @@ void MyPhysicsWorld::addAnchoredRope(MyAnchoredRope* rope, bool showSegments) {
             newParticle->setUsesGravity(rope->getUsesGravity());
             if (i == 0) {
                 newParticle->setPosition(MyVector3(rope->getAnchorPoint()));
-                newParticle->setPersistent(true);
+                newParticle->setIsPersistent(true);
             } else
                 newParticle->setPosition(MyVector3(
                     rope->getParticles()[i - 1]->getPosition().x,
@@ -195,8 +195,8 @@ void MyPhysicsWorld::addAnchoredChain(MyAnchoredChain* chain, bool showSegments)
         return;
     }
     chain->getAnchorParticle()->setOriginalPosition(chain->getAnchorPoint(), true);
-    if (!chain->getAnchorParticle()->getPersistent())
-        chain->getAnchorParticle()->setPersistent(true);
+    if (!chain->getAnchorParticle()->getIsPersistent())
+        chain->getAnchorParticle()->setIsPersistent(true);
     if (chain->getAnchorParticle()->getHasCollision())
         chain->getAnchorParticle()->setHasCollision(false);
     chain->getAnchorParticle()->setRadius(0.3f);
